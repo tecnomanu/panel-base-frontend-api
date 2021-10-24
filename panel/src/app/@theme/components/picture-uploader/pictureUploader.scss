@@ -1,0 +1,92 @@
+@import '../../styles/themes';
+body{
+  padding: 132px;
+}
+@include nb-install-component() {
+  .picture-group {
+    border: 1px dashed #b8b8b8;
+    height: auto;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+
+    &.disabled{
+      cursor: default;
+      filter: grayscale(1);
+    }
+
+    &.center-group{
+      margin: auto;
+    }
+    .picture-wrapper {
+      display: flex;
+      overflow: hidden;
+      align-items: center;
+      width: 100%;
+    }
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+    }
+    i {
+      display: none;
+      position: absolute;
+      font-size: 32px;
+      background: nb-theme(color-danger-500);
+      cursor: pointer;
+      color: white;
+      top: -11px;
+      right: -11px;
+      height: 26px;
+      border-radius: 50%;
+      transition: all .3s ease-in-out;
+      &:before {
+        vertical-align: top;
+        line-height: 26px;
+      }
+      &:hover {
+        //background: darken(nb-theme(color-danger),5%);
+        box-shadow: 1px 1px 3px black;
+      }
+    }
+    a.change-picture {
+      display: none;
+      width: 100%;
+      background: #4CAF50;
+      transition: all 200ms ease-in-out;
+      color: white;
+      text-decoration: none;
+      position: absolute;
+      bottom: 0;
+      line-height: 32px;
+      text-align: center;
+
+      &.broken{
+        background: #af2c28;
+      }
+
+    }
+    &:not(disabled):hover {
+      i {
+        display: block;
+        @include animation(bounceIn, .5s);
+      }
+      .change-picture {
+        display: block;
+        @include animation(fadeInUp, .5s);
+      }
+    }
+
+    .loading {
+      width: 20px;
+      height: 20px;
+      right: 5px;
+      top: 5px;
+      display: flex;
+      position: absolute;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

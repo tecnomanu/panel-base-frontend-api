@@ -1,0 +1,44 @@
+<!--&lt;!&ndash; Small modal &ndash;&gt;-->
+<!--<div bsModal #customModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" [config]="{backdrop: 'static'}">-->
+    <!--<div class="modal-dialog modal-md">-->
+        <!--<div class="modal-content">-->
+            <!--<div class="modal-header">-->
+                <!--<h4 class="modal-title">{{baModalConfig.title}}</h4>-->
+                <!--<button type="button" class="close" aria-label="Close" (click)="cancel()">-->
+                    <!--<span aria-hidden="true">&times;</span>-->
+                <!--</button>-->
+            <!--</div>-->
+            <!--<div class="modal-body">-->
+                <!--{{baModalConfig.body}}-->
+
+                <!--<div *ngIf="error" class="text-danger" style="padding-top: 20px;">{{error}}</div>-->
+            <!--</div>-->
+            <!--<div class="modal-footer">-->
+                <!--<button [disabled]="disabled" class="btn confirm-btn" (click)="okey()" [ngClass]="baModalConfig.buttonOkeyColor"><i [ngClass]="disabled ? 'fa fa-sync-alt fa-spin' : baModalConfig.buttonOkeyIcon"></i> {{baModalConfig.buttonOkey}}</button>-->
+                <!--<button [disabled]="disabled" class="btn btn-secondary" (click)="cancel()">Cancelar</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<ng-template #dialog let-data let-ref="dialogRef">-->
+    <!--<nb-card>-->
+        <!--<nb-card-header>-->
+            <!--<h4 class="modal-title">{{baModalConfig.title}}</h4>-->
+            <!--<button type="button" class="close" aria-label="Close" (click)="ref.close()">-->
+                <!--<span aria-hidden="true">&times;</span>-->
+            <!--</button>-->
+        <!--</nb-card-header>-->
+        <!--<nb-card-body>-->
+            <!--{{baModalConfig.body}}-->
+
+            <!--<div *ngIf="error" class="text-danger" style="padding-top: 20px;">{{error}}</div>-->
+        <!--</nb-card-body>-->
+        <!--<nb-card-footer>-->
+            <!--<button nbButton [disabled]="disabled" class="btn confirm-btn" (click)="okey()" [ngClass]="baModalConfig.buttonOkeyColor">-->
+                <!--<i [ngClass]="disabled ? 'fa fa-sync-alt fa-spin' : baModalConfig.buttonOkeyIcon"></i> {{baModalConfig.buttonOkey}}-->
+            <!--</button>-->
+            <!--<button nbButton [disabled]="disabled" class="btn btn-secondary" (click)="ref.close()">Cancelar</button>-->
+        <!--</nb-card-footer>-->
+    <!--</nb-card>-->
+<!--</ng-template>-->

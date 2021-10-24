@@ -1,0 +1,96 @@
+@import '../../../@theme/styles/themes';
+
+select2-component{
+  .input-group &{
+    flex: auto;
+  }
+  .select2-container{
+    .select2-selection{
+      &.select2-selection--single{
+        height: 46px !important;
+        background-color: #f7f9fc;
+        border-color: #edf1f7;
+        border-style: solid;
+        border-width: 1px;
+        color: #1a2138;
+        font-family: Open Sans, sans-serif;
+        -webkit-transition-duration: 0.15s;
+        transition-duration: 0.15s;
+        -webkit-transition-property: border, background-color, color;
+        transition-property: border, background-color, color;
+        -webkit-transition-timing-function: ease-in;
+        transition-timing-function: ease-in;
+      }
+    }
+  }
+
+  .select2-container--default{
+    .select2-selection--single{
+      outline: none;
+
+      .select2-selection__arrow{
+        height: 46px !important;
+        b {
+          border-color: #888 transparent transparent transparent;
+        }
+      }
+
+      .select2-selection__rendered{
+        color: #2b2b2b !important;
+        font-weight: bold;
+        line-height: 40px !important;
+        padding-left: 8px !important;
+      }
+    }
+    .select2-selection--multiple{
+      border: 2px solid #dadfe6 !important;
+      min-height: 46px !important;
+
+      .select2-selection__rendered{
+        min-height: 32px;
+        line-height: 32px;
+      }
+    }
+  }
+
+  &.sm{
+    .select2-container{
+      .select2-selection{
+        &.select2-selection--single{
+          height: 33px !important;
+
+          .select2-selection__arrow{
+            height: 34px !important;
+          }
+
+          .select2-selection__rendered{
+            line-height: 28px !important;
+          }
+        }
+      }
+    }
+  }
+
+  .invalid{
+    .select2-container{
+      .select2-selection{
+        &.select2-selection--single{
+          border-color: nb-theme(color-danger-500);
+        }
+      }
+    }
+  }
+}
+
+.input-group{
+  select2-component.form-control{
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    .select2-selection--single{
+      outline: none;
+      border-radius: 4px 0 0 4px;
+    }
+  }
+}

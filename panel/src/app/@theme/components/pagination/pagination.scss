@@ -1,0 +1,11 @@
+//@import "~ammap3/ammap/ammap";
+pagination-component{
+  .btn-group{
+    .btn:not(:hover):not(.active){
+      background: white !important;
+    }
+    .btn{
+      padding: 7px 12px;
+    }
+  }
+}

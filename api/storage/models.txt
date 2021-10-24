@@ -1,0 +1,173 @@
+Provider:
+    belongsTo: products, company
+    fields:
+        name:
+          schema: string:255
+          rules: required
+          tags: fillable
+        email:
+          schema: string
+          rules: required email
+          tags: fillable
+        image:
+          schema: string:255
+          tags: fillable
+        birthday:
+          schema: string
+          tags: fillable
+        user_id:
+          schema: date
+          tags: fillable
+        company_id:
+          schema: integer
+          rules: required
+          tags: fillable
+Product:
+    belongsTo: provider
+    fields:
+        name:
+          schema: string:255
+          rules: required
+          tags: fillable
+        code:
+          schema: string:255
+          rules: required
+          tags: fillable
+        percentage:
+          schema: string:255
+          rules: required
+          tags: fillable
+        image:
+          schema: string:255
+          tags: fillable
+        prices:
+          schema: string:255
+          tags: fillable
+        min_stock:
+          schema: string
+          tags: fillable
+        stock:
+          schema: string
+          rules: required
+          tags: fillable
+        config:
+          schema: string:255
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
+CashBox:
+    belongsTo: local, company
+    fields:
+        name:
+          schema: string:255
+          rules: required
+          tags: fillable
+        type:
+          schema: string
+          tags: fillable
+        initial_value:
+          schema: string
+          tags: fillable
+        total:
+          schema: string
+          tags: fillable
+        local_id:
+          schema: integer
+          rules: required
+          tags: fillable
+        company_id:
+          schema: integer
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
+Local:
+    belongsTo: cashBoxes, company
+    fields:
+        name:
+          schema: string:255
+          rules: required
+          tags: fillable
+        address:
+          schema: string:255
+          tags: fillable
+        company_id:
+          schema: integer
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
+Movement:
+    belongsTo: cashBox
+    fields:
+        cash_box_id:
+          schema: integer
+          rules: required
+          tags: fillable
+        total:
+          schema: string:255
+          rules: required
+          tags: fillable
+        quantity:
+          schema: string:255
+          rules: required
+          tags: fillable
+        type:
+          schema: string:255
+          rules: required
+          tags: fillable
+        concept:
+          schema: string:255
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
+Sale:
+    belongsTo: cashBox
+    fields:
+        cash_box_id:
+          schema: integer
+          rules: required
+          tags: fillable
+        total:
+          schema: string:255
+          rules: required
+          tags: fillable
+        subtotal:
+          schema: string:255
+          rules: required
+          tags: fillable
+        quantity:
+          schema: string:255
+          rules: required
+          tags: fillable
+        product_id:
+          schema: string:255
+          rules: required
+          tags: fillable
+        product_name:
+          schema: string:255
+          rules: required
+          tags: fillable
+        product_code:
+          schema: string:255
+          rules: required
+          tags: fillable
+        currency:
+          schema: string:255
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
+CurrentAccount:
+    belongsTo: provider, sale
+    fields:
+        total:
+          schema: string:255
+          rules: required
+          tags: fillable
+        sale_id:
+          schema: string:255
+          rules: required
+          tags: fillable
+        concept:
+          schema: string:255
+          rules: required
+          tags: fillable
+    add: timestamps softDeletes
