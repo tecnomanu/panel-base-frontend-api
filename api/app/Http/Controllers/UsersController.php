@@ -1,18 +1,17 @@
 <?php namespace App\Http\Controllers;
 
 use App\Libraries\Helpers;
-use App\Role;
-use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use MongoDB\BSON\UTCDateTime;
 
 class UsersController extends Controller {
 
-    const MODEL = "App\User";
+    const MODEL = "App\Models\User";
 
     use RESTActions;
 
@@ -25,7 +24,6 @@ class UsersController extends Controller {
         $this->jwt = $jwt;
         $this->user = $this->jwt->parseToken()->authenticate();
         $payload = Auth::parseToken()->getPayload();
-        $this->local_id = $payload->get("local_id");
     }
 
     public function all(Request $request)
@@ -47,7 +45,12 @@ class UsersController extends Controller {
             //Function query
             $result = $model::orderBy($order_by, $order)
                 ->where(function ($query) use($search) {
-                    $query->where('company_id', $this->user->company_id);
+                    if(!$this->user->hasRoles(["root"])){
+                        $query->where('company_id', $this->user->company_id);
+                        $query->whereHas("roles", function($q){
+                            $q->where("type", "!=", "root");
+                        });
+                    }
                 })
                 ->where(function ($query) use($search, $newM) {
                     if($search){
@@ -57,7 +60,7 @@ class UsersController extends Controller {
                                 $query->orWhere($column, 'like', '%'.$search.'%');
                         }
                     }
-                })->with("provider")->paginate($per_page);
+                })->paginate($per_page);
 
             return $this->respond(Response::HTTP_OK, $result);
         }catch(\ErrorException $e) {
@@ -73,7 +76,7 @@ class UsersController extends Controller {
             if(is_null($model))
                 return $this->respond(Response::HTTP_NOT_FOUND);
 
-            $model->provider;
+            $model->company;
 
             return $this->respond(Response::HTTP_OK, $model);
         }catch(\ErrorException $e) {
@@ -92,11 +95,16 @@ class UsersController extends Controller {
                 Rule::unique('users')->where(function ($query) {return $query->whereNull('deleted_at');})
             ];
 
+            if(!$request->input("role"))
+                return response()->json(['role' => ['Debe elegir un role.']], 422);
+            else if($this->user->hasRoles(["root"]) && $request->input("role") == "admin")
+                $rules["company"] = "required";
+
             Helpers::validate($request, $rules, $m::$messages);
+            //Only get permission fields
+            $data = $request->only(["email", "first_name", "birthday", "last_name", "password", "confirmation_password"]);
 
-            $data = $request->all();
-
-            if(!$this->user->hasRoles(["root", "admin"]) && $data["role"] == "root")
+            if(!$this->user->hasRoles(["root"]) && $data["role"] == "root")
                 return $this->isUnauthorized();
 
             if($data["password"] != $data["confirmation_password"])
@@ -104,13 +112,38 @@ class UsersController extends Controller {
 
             $data["password"] = app('hash')->make($data["password"]);
 
+            if($request->input("role") == "admin" && $this->user->hasRoles(["root"])){
+                if(Company::where("name", $data["company"])->first())
+                    return response()->json(['role' => ['El nombre de la empresa que eligió ya existe, utilice otro por favor.']], 422);
+                else{
+                    $company = Company::create(["name" => $data["company"]]);
+                    $data["company_id"] = $company->_id;
+                }
+            }else
+                $data["company_id"] = $this->user->company_id;
+            
+            //Validation birthday format
+            if($data["birthday"])
+                $data["birthday"] =  new UTCDateTime(Carbon::parse($data["birthday"]));
+        
             $user = $m::create($data);
 
+            $role_id = null;
             if($data["role"]){
-                $role = \App\Role::where("type", $data["role"])->first();
-                if($role)
-                    $user->roles()->attach($role);
+                $role = Role::where("type", $data["role"])->first();
+                if($role &&
+                    ($this->user->hasRole("root") ||
+                    ($this->user->hasRole("user") && $role->type == "user" ) ||
+                    (in_array($role->type, ["admin", "user"]) && $this->user->hasRole("admin")) )
+                )
+                    $role_id = $role->id;
+            }else if($this->user->hasRole("root")){
+                $role = Role::where("type", "admin")->first();
+                $role_id = $role->id;
             }
+
+            if($role_id)
+                $user->roles()->sync([$role_id]);
 
             return $this->respond(Response::HTTP_CREATED, $user);
         }catch(HttpResponseException $e){
@@ -121,16 +154,22 @@ class UsersController extends Controller {
     public function put(Request $request, $id)
     {
         try{
-            $m = self::MODEL;
-            $rules =  User::$rules;
-            $rules["username"] = "required";
-            Helpers::validate($request, $rules, $m::$messages);
-            $user = $m::find($id);
-            $data = $request->all();
+            // Control access by type user.
+            if ($this->user->_id != $id)
+                return $this->isUnauthorized();
 
+            // Getting Model and Rules
+            $m = self::MODEL;
+            $rules["email"] = "required";
+            Helpers::validate($request, $rules, $m::$messages);
+            
             //Find or fail
+            $user = $m::find($id);
             if(is_null($user))
                 return $this->respond(Response::HTTP_NOT_FOUND);
+
+            //Only get permission fields
+            $data = $request->only(["email", "first_name", "birthday", "last_name", "password", "confirmation_password"]);
 
             if(isset($data["password"])){
                 if($data["password"] != $data["confirmation_password"])
@@ -138,18 +177,21 @@ class UsersController extends Controller {
 
                 $data["password"] = app('hash')->make($data["password"]);
             }
-            
-            if($data["role"]){
-                
-                if(!$this->user->hasRoles(["root", "admin"]) && $data["role"] == "root")
-                    return $this->isUnauthorized();
-                
-                $role = \App\Role::where("type", $data["role"])->first();
-                if($role)
-                    $user->roles()->attach($role);
+
+            //Update avatar
+            $avatar = $request->input('avatar');
+            if($avatar && isset($avatar['base64_image'])){
+                $newLogo = Helpers::save_image($avatar, 'avatars', "avatar_" . $id);
+                if($newLogo)
+                    $data["avatar"] = $newLogo;
             }
 
+            //Validation birthday format
+            if($data["birthday"])
+                $data["birthday"] =  new UTCDateTime(Carbon::parse($data["birthday"]));
+
             $user->update($data);
+
             return $this->respond(Response::HTTP_OK, $user);
         }catch(HttpResponseException $e){
             return $e->getResponse();

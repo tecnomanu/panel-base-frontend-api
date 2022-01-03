@@ -5,39 +5,61 @@ use Carbon\Carbon;
 use GrahamCampbell\Flysystem\Facades\Flysystem;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class Helpers
 {
     public static function save_image($image, $dir, $name)
     {
         try {
-            $path_file = null;
+            $exist = false;
+            $path_file = $image;
+            $path_thumb_file = null;
             if (isset($image["base64_image"])) {
-                $png_url = $name . "_". Carbon::now()->timestamp;
-                $path_file = 'images/' . $dir . '/' . $png_url;
-                if(!Flysystem::has('images/' . $dir))
-                    Flysystem::createDir('images/' . $dir);
+                $name = Str::snake($name);
+                $name = Str::ascii($name);
+                $extension = isset($image["type"]) &&
+                ($image["type"] == "image/jpeg" ||
+                    $image["type"] == "image/jpg" ||
+                    $image["type"] == "image/webp" ) ? ".jpg" : ".png";
+
+                $image_name = $name . "_". Carbon::now()->timestamp . $extension;
+
+                $path_file = $dir . '/' . $image_name;
+                $path_thumb_file = $dir . '/thumb_' . $image_name;
+
+                if(!Flysystem::has($dir))
+                    Flysystem::createDir($dir);
 
                 //General Image Vars
                 $fileByBase64 = file_get_contents($image["base64_image"]);
                 
                 //Original
-                Image::make($fileByBase64)->save(app()->public_path . '/' . $path_file .".png");
-
-                $width = 128;
-                $height = 128;
-                //Thumbnails
-                Image::make($fileByBase64)->resize($width, $height, function ($constraint) {
+                $img = Image::make($fileByBase64)->resize(200, null, function ($constraint){
                     $constraint->aspectRatio();
-                })->save(app()->public_path . '/' . $path_file ."_thumb.png");
+                    $constraint->upsize();
+                })->stream()->detach();
+                //})->save($path_file);
+                Flysystem::put($path_file, $img);
 
-                $path_file = ["path" => $path_file .".png", "path_thumb" => $path_file."_thumb.png" ] ;
+                //Thumbnails
+                $thumb = Image::make($fileByBase64)->resize(128, 128, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->stream()->detach();
+                //})->save($path_thumb_file);
+                Flysystem::put($path_thumb_file, $thumb);
+
+                
+
+                $exist = true;
             }
-            return $path_file ? $path_file : null;
+            return $exist ? ["image" => $path_file, "thumb" => $path_thumb_file] : false;
+
         } catch (\ErrorException $e) {
             $error =  $e->getMessage();
             $request = response()->json($error, 500);
@@ -60,9 +82,10 @@ class Helpers
         }
     }
 
-    public static function validate($request, $rules, $messages = false)
+    public static function validate($request, $rules, $messages = [])
     {
-        $validator = Validator::make($request->all(), $rules, $messages);
+        $data_validator = method_exists($request, 'all') ? $request->all() : $request;
+        $validator = Validator::make($data_validator, $rules, $messages);
         if ($validator->fails()) {
             $errors = $validator->errors()->getMessages();
             $request = response()->json($errors, 422);

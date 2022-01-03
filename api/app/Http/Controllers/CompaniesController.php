@@ -9,7 +9,7 @@ use Tymon\JWTAuth\JWTAuth;
 
 class CompaniesController extends Controller {
 
-    const MODEL = "App\Company";
+    const MODEL = "App\Models\Company";
 
     use RESTActions;
 

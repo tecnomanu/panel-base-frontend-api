@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 
 class RolesController extends Controller {
 
-    const MODEL = "App\Role";
+    const MODEL = "App\Models\Role";
 
     use RESTActions;
 
@@ -41,11 +41,9 @@ class RolesController extends Controller {
             $result = $model::orderBy($order_by, $order)
                 ->where(function ($query) {
                     if (!$this->user->hasRole("root")){
-                        $query->where('type', "!=", "root")->where('type', "!=", "admin");
-                        if ($this->user->hasRole("Taster"))
-                            $query->where('type', "!=", "taster");
-                        if ($this->user->hasRole("User"))
-                            $query->where('type', "!=", "user");
+                        $query->where('type', "!=", "root");
+                        if ($this->user->hasRole("user"))
+                            $query->where('type', "!=", "admin");
                     }
                 })
                 ->where(function ($query) use($search, $newM) {

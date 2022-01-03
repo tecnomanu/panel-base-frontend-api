@@ -1,4 +1,4 @@
-<?php namespace App;
+<?php namespace App\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes as SoftDeletes;
@@ -7,17 +7,12 @@ class Company extends Eloquent {
 
     use SoftDeletes;
 
-    protected $fillable = ["name", "slug", "logo", "address", "phone", "url", "email"];
+    protected $fillable = ["name", "slug", "owner_id"] ;
 
     protected $dates = [];
 
     public static $rules = [
         "name" => "required",
-        "logo" => "required",
-        "address" => "required",
-        "phone" => "required",
-        "url" => "required",
-        "email" => "required,email",
     ];
 
     //Append news Attributes;
@@ -31,15 +26,15 @@ class Company extends Eloquent {
     
     public function membership()
     {
-        return $this->belongsTo("App\Membership");
+        return $this->belongsTo("App\Models\Membership");
+    }
+
+    public function owner(){
+        return $this->hasOne(User::class, '_id', 'owner_id');
     }
     
     public function users(){
-        return $this->belongsTo('App\User');
-    }
-
-    public function locals(){
-        return $this->belongsToMany('App\Local', "locals", "company_id", "_id");
+        return $this->belongsTo(User::class);
     }
 
     //Functions

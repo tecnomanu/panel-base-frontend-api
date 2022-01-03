@@ -11,16 +11,7 @@
 |
 */
 global $app;
-
-//Root of lumen
-$router->get('/', function () use($app){
-    return $app->version();
-});
-
-//Function to generate a random Key
-$router->get('/key', function() {
-    return str_random(32);
-});
+use Illuminate\Support\Facades\Route;
 
 //Special Function to make resources
 function rest($path, $controller)
@@ -36,27 +27,47 @@ function rest($path, $controller)
     $app->router->get($path.'/{id}/clone', $controller.'@replicate');
 }
 
-//Fix to Method OPTIONS
-$router->options('/{any:.*}', function () {
-    return response(['status' => 'success'])->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods','OPTIONS, GET, POST, PUT, DELETE')
-        ->header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Origin');
+//Root of lumen
+Route::get('/', function () use($app){
+    return $app->version();
 });
 
+//Function to generate a random Key
+Route::get('/key', function() {
+    return str_random(32);
+});
 
-$router->group(['prefix' => 'v1'], function($router)
+Route::group(['prefix' => 'api/v1'], function($router)
 {
-    $router->group(['prefix' => 'auth', 'namespace' => 'Auth'], function($router)
-    {
-        $router->post('/login', 'AuthController@login');
-        $router->post('/logout', 'AuthController@logout');
+    //Fix to Method OPTIONS
+    Route::options('/{any:.*}', function () {
+        return response(['status' => 'success'])->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods','OPTIONS, GET, POST, PUT, DELETE')
+            ->header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Origin');
     });
 
-    $router->group(['middleware' => 'auth:api'], function($router)
+    Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function($router)
     {
-        $router->get('/me/data', 'UsersController@getSelfData');
+        Route::post('/login', 'AuthController@login');
+        Route::post('/register', 'AuthController@register');
+        Route::post('/logout', 'AuthController@logout');
+        Route::post('/request-password', 'AuthController@requestPassword');
+        Route::put('/reset-password', 'AuthController@resetPassword');
+        Route::group(['prefix' => 'verify'], function($router)
+        {
+            Route::post('/', 'AuthController@verifyEmail');
+            Route::group(['middleware' => 'auth:api'], function($router)
+            {
+                Route::get('/send', 'AuthController@sendVerificationEmail');
+            });
+        });
+    });
 
-        $router->group(['prefix' => 'admin'], function($router)
+    Route::group(['middleware' => ['auth:api','verify']], function($router)
+    {
+        Route::get('/me/data', 'UsersController@getSelfData');
+
+        Route::group(['prefix' => 'admin'], function($router)
         {
             rest('user', 'UsersController');
             rest('company', 'CompaniesController');

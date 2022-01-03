@@ -3,7 +3,9 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 try {
-    (new Dotenv\Dotenv(__DIR__.'/../'))->load();
+    (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
+        dirname(__DIR__)
+    ))->bootstrap();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
@@ -69,6 +71,10 @@ $app->middleware([
      'auth' => App\Http\Middleware\Authenticate::class,
  ]);
 
+ $app->routeMiddleware([
+    'verify' => App\Http\Middleware\Verificate::class,
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -85,20 +91,28 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
+$app->register(\Illuminate\Mail\MailServiceProvider::class);
 
 //Vendors
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
-$app->register(Wn\Generators\CommandsServiceProvider::class);
-$app->register(Intervention\Image\ImageServiceProviderLumen::class);
-$app->register(Vluzrmos\Tinker\TinkerServiceProvider::class);
-$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
-$app->register(\Maatwebsite\Excel\ExcelServiceProvider::class);
+
 //Alias
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('Excel', \Maatwebsite\Excel\Facades\Excel::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
+//Alias
+$app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+$app->alias('Notification', Illuminate\Support\Facades\Notification::class);
+
 $app->register(GrahamCampbell\Flysystem\FlysystemServiceProvider::class);
+
+$app->configure('mail');
+$app->configure('filesystems');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

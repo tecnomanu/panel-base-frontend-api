@@ -1,22 +1,24 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes as SoftDeletes;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Eloquent implements JWTSubject, AuthenticatableContract, AuthorizableContract
 {
+    use Notifiable;
     use Authenticatable, Authorizable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ["first_name", "last_name", "gender", "username", "email", "birthday", "avatar", "password", "company_id"];
+    protected $fillable = ["first_name", "last_name", "gender", "username", "email", "birthday", "avatar", "capability", "password", "company_id", 'verified_at', 'verification_code'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -26,7 +28,13 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
     protected $hidden = [
         'password',
         'role_id',
-        'tasting_ids'
+        'verified_at',
+        'verification_code'
+    ];
+
+    protected $casts = [
+        'verified_at' => 'datetime',
+        'birthday' => 'datetime',
     ];
 
 
@@ -48,7 +56,11 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
 
     public static $messages = [
         'first_name' => 'El nombre es requerido',
-        'email' => 'El email es requerido',
+        'email' => [
+            'required' => 'El email es requerido',
+            'unique' => 'El email ya esta siendo usado',
+            'email' => 'El correo electronico no es valido',
+        ],
         'username.required' => 'El nombre de usuario es requerido',
         'username.unique' => 'El nombre de usuario ya existe, elija otro.',
     ];
@@ -72,21 +84,27 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
     //RelationShips
 
     public function roles(){
-        return $this->belongsToMany( "App\Role", "user_role", "user_id", "role_id");
+        return $this->belongsToMany( "App\Models\Role", "user_role", "user_id", "role_id");
     }
 
     public function company(){
-        return $this->belongsTo( "App\Company");
+        return $this->belongsTo( "App\Models\Company");
     }
 
     public function provider(){
-        return $this->belongsTo( "App\Provider");
+        return $this->belongsTo( "App\Models\Sales\Provider");
     }
 
     //Functions
 //    public function getRelationshipsAttributes(){
 //        //$this->owner;
 //    }
+
+    public function hasCapability($type, $value = null) {
+        $capability = $this->capability && $this->capability[$type] ? $this->capability[$type] : null;
+        return $capability ?
+            ($value !== null ? $capability == $value : $capability) : false;
+    }
 
     public function hasRole($role){
         return $this->hasRoles([$role]);
@@ -99,17 +117,5 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
                 return true;
         }
         return false;
-    }
-    
-    public function canAssignRole($role, $auth_role){
-        return $auth_role != "root" &&
-        (
-            $role["type"] == "root" ||
-            $role["type"] == "admin" ||
-            ($role["type"] == "provider" && $auth_role != "admin") ||
-            ($role["type"] != "manager" && $role["type"] != "supplier" && $auth_role == "client") ||
-            ($role["type"] != "supplier" && $auth_role == "manager") ||
-            $auth_role == "supplier"
-        );
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes as SoftDeletes;
