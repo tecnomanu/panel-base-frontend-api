@@ -40,21 +40,17 @@ class Helpers
                 $fileByBase64 = file_get_contents($image["base64_image"]);
                 
                 //Original
-                $img = Image::make($fileByBase64)->resize(200, null, function ($constraint){
+                $img = Image::make($fileByBase64)->resize(500, null, function ($constraint){
                     $constraint->aspectRatio();
                     $constraint->upsize();
                 })->stream()->detach();
-                //})->save($path_file);
-                Flysystem::put($path_file, $img);
+                Storage::put($path_file, $img);
 
                 //Thumbnails
                 $thumb = Image::make($fileByBase64)->resize(128, 128, function ($constraint) {
                     $constraint->aspectRatio();
                 })->stream()->detach();
-                //})->save($path_thumb_file);
-                Flysystem::put($path_thumb_file, $thumb);
-
-                
+                Storage::put($path_thumb_file, $thumb);
 
                 $exist = true;
             }
