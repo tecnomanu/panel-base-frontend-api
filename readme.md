@@ -6,7 +6,7 @@
 
 Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de usuario y un frontpanel con Nebular, listo para clonar e iniciar todos tus proyectos.
 
-### Que incluye?
+### ¿Qué incluye?
 - Panel administrativo con:
     - Dashboard dummy orientado al ecommerce (útil para cualquier otra area)
     - Menu de Empresas, podras administrar las empresas como grupos de trabajos.
