@@ -1,33 +1,32 @@
 <?php
 
+use App\Models\Company;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-/**
- * Created by PhpStorm.
- * User: manuel
- * Date: 31/1/17
- * Time: 16:41
- */
 class UsersTableSeeder extends Seeder
 {
     public function run()
     {
-        $user = \App\User::where("username", "root")->first();
-        $company = \App\Company::where("slug", "panel_base")->first();
+        $user = User::where("username", "root")->first();
+        $company = Company::where("slug", "panel_base")->first();
 
         if(!$user){
 
-            $user =\App\User::create([
+            $user = User::create([
                 'first_name' => 'Admin',
                 'last_name' => 'Admin',
                 'password' => app('hash')->make('12345678'),
                 'email' => 'root@root.com',
                 'username' => 'root',
+                'verified_at' => \Carbon\Carbon::now()->toDateString() , 
+                'verification_code' =>  sha1(Str::random(32)),
                 'company_id' => $company ? $company->_id : null
             ]);
 
-            $role = \App\Role::where("name", "Root")->first();
+            $role =  Role::where("name", "Root")->first();
             $user->roles()->attach($role);
 
         }else if($user && $company){

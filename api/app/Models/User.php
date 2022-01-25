@@ -18,7 +18,19 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ["first_name", "last_name", "gender", "username", "email", "birthday", "avatar", "capability", "password", "company_id", 'verified_at', 'verification_code'];
+    protected $fillable = [
+        "first_name", 
+        "last_name", 
+        "username", 
+        "email", 
+        "birthday", 
+        "avatar", 
+        "capability", 
+        "password", 
+        "company_id",
+        'verified_at', 
+        'verification_code'
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -56,43 +68,41 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
 
     public static $messages = [
         'first_name' => 'El nombre es requerido',
-        'email' => [
-            'required' => 'El email es requerido',
-            'unique' => 'El email ya esta siendo usado',
-            'email' => 'El correo electronico no es valido',
-        ],
+        'email.required' => 'El email es requerido',
+        'email.unique' => 'El email ya esta siendo usado',
+        'email.email' =>'El correo electronico no es valido',
         'username.required' => 'El nombre de usuario es requerido',
         'username.unique' => 'El nombre de usuario ya existe, elija otro.',
     ];
 
-    protected $appends = ['text', 'role', 'role_name'];
+    protected $appends = ['text', 'role_name'];
 
-    public function getTextAttribute(){
+    public function getTextAttribute()
+    {
         return $this->first_name . " " . $this->last_name;
     }
 
-    public function getRoleAttribute(){
+    public function getRoleAttribute()
+    {
         $role = $this->roles()->first();
         return $role ? $role->type : null;
     }
 
-    public function getRoleNameAttribute(){
+    public function getRoleNameAttribute()
+    {
         $role = $this->roles()->first();
         return $role ? $role->name : null;
     }
 
     //RelationShips
 
-    public function roles(){
-        return $this->belongsToMany( "App\Models\Role", "user_role", "user_id", "role_id");
+    public function roles()
+    {
+        return $this->belongsToMany("App\Models\Role", "user_role", "user_id", "role_id");
     }
 
     public function company(){
         return $this->belongsTo( "App\Models\Company");
-    }
-
-    public function provider(){
-        return $this->belongsTo( "App\Models\Sales\Provider");
     }
 
     //Functions
@@ -100,22 +110,41 @@ class User extends Eloquent implements JWTSubject, AuthenticatableContract, Auth
 //        //$this->owner;
 //    }
 
-    public function hasCapability($type, $value = null) {
+    public function hasCapability($type, $value = null)
+    {
         $capability = $this->capability && $this->capability[$type] ? $this->capability[$type] : null;
         return $capability ?
             ($value !== null ? $capability == $value : $capability) : false;
     }
 
-    public function hasRole($role){
+    public function hasRole($role)
+    {
         return $this->hasRoles([$role]);
     }
-        
+
     public function hasRoles($roles)
     {
-        foreach ($roles as $role){
-            if($this->roles()->get()->contains("type", $role))
+        foreach ($roles as $role) {
+            if ($this->roles()->get()->contains("type", $role))
                 return true;
         }
         return false;
+    }
+
+    public function hasPermission($user)
+    {
+        if (
+            $user->hasRole("root") ||
+            $this->_id == $user->_id ||
+            ($user->hasRole("provider-admin") &&
+                $this->provider_id == $user->provider_id)
+        )
+            return true;
+        else if (
+            $this->client_id == $user->client_id &&
+            $this->hasRole("client-user") &&
+            $user->hasRole("client-admin")
+        )
+            return true;
     }
 }
