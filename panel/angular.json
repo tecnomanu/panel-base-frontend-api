@@ -40,6 +40,9 @@
               "node_modules/select2/dist/js/select2.min.js",
               "node_modules/select2/dist/js/i18n/es.js",
               "node_modules/wowjs/dist/wow.js",
+              "node_modules/echarts/dist/echarts.min.js",
+              "node_modules/echarts/dist/extension/bmap.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
               "src/assets/js/confetti.js"
             ],
             "allowedCommonJsDependencies": [
