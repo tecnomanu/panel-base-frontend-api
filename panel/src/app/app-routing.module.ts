@@ -11,8 +11,8 @@ export const routes: Routes = [
       loadChildren: () => import('./auth/auth.module')
           .then(m => m.NgxAuthModule),
   },
-  { path: '', redirectTo: 'auth', pathMatch: 'full' },
-  { path: '**', redirectTo: '' },
+  { path: '', redirectTo: 'pages', pathMatch: 'full' },
+  { path: '**', redirectTo: 'pages' },
 ];
 
 const config: ExtraOptions = {

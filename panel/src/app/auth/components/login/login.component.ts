@@ -26,15 +26,13 @@ export class NgxLoginComponent {
     messages: string[] = [];
     user: any = {};
     submitted: boolean = false;
-    // socialLinks: NbAuthSocialLink[] = [];
     rememberMe = false;
 
-    logo = 'assets/images/logo.svg';
+    logo = 'assets/images/logo.png';
 
     constructor(protected service: NbAuthService,
         @Inject(NB_AUTH_OPTIONS) protected options = {},
         protected cd: ChangeDetectorRef,
-        private elRef: ElementRef,
         protected _router: Router) {
 
         this.redirectDelay = this.options['forms'].login.redirectDelay;
