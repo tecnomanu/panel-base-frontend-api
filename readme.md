@@ -6,6 +6,29 @@
 
 Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de usuario y un frontpanel con Nebular, listo para clonar e iniciar todos tus proyectos.
 
+### Que incluye?
+- Panel administrativo con:
+    - Dashboard dummy orientado al ecommerce (útil para cualquier otra area)
+    - Menu de Empresas, podras administrar las empresas como grupos de trabajos.
+    - Menu de Ususario, lista, crea, edita o elimina los usuarios que estarán enlazados a empresas.
+    - Pantalla de Login, Logout, Singup y validación de ususario por codigo via email.
+
+- API Rest:
+    - Semillas para iniciar tu proyecto con Root y empresa base.
+    - Modulo de Usuarios (Model, Controller, Routas) tipo CRUD.
+    - Modulo de Empresas (Model, Controller, Routas) tipo CRUD.
+    - Modulo de Roles (Model, Controller, Routas) solo lectura.
+    - Middleware para Login de usuarios por metodo JWT (token bearer).
+    - Endpoints basados en version, para poder aplicar versiones nuevas en caso de ser necesario.
+    - Trail ReasAction para poder crear Controller simples con pre-funciones tipo CRUD.
+
+### Documentación de Repositorios utilizados
+- Panel
+    - [Nebular](https://akveo.github.io/nebular/docs/getting-started/what-is-nebular?utm_campaign=nebular%20-%20home%20-%20nebular%20github%20readme&utm_source=nebular&utm_medium=referral&utm_content=documentation)
+    
+- APIRest
+    - [Lumen](https://lumen.laravel.com/docs)
+    - [JWT-Auth](https://github.com/tymondesigns/jwt-auth/wiki)
 
 ### Instalación y configuración
 
@@ -41,8 +64,14 @@ php -S localhost:8000 -t public
 
 7. Listo! Configura tu Lumen y Panel a gusto.
 
+### License
+[MIT](https://github.com/tecnomanu/ngxadmin-lumen-jwtlogin-base/blob/master/LICENSE.txt) license.
 
 [![N|Solid](http://tecnomanu.com.ar/wp-content/uploads/2017/03/manucloud_createby.png)](https://manu.cloud)
+
+## Nebular
+[Documentation](https://akveo.github.io/nebular/docs/getting-started/what-is-nebular?utm_campaign=nebular%20-%20home%20-%20nebular%20github%20readme&utm_source=nebular&utm_medium=referral&utm_content=documentation)
+Nebular is a customizable Angular 10 UI Library with a focus on beautiful design and ability to adapt it to your brand easily. It comes with 4 stunning visual themes, a powerful theming engine with runtime theme switching and support of custom css properties mode. Nebular is based on Eva Design System specifications.
 
 # Creditos y Plataformas
 ### Ngx-Admin by Akeveo [Repositorio](https://github.com/akveo/ngx-admin)
