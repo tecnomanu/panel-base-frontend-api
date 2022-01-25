@@ -1,75 +1,21 @@
-# Panel Administrador Base creado con Angular + Lumen + JWT
-## Akveo Nebular + Lumen 8 + JWT 1.0-rc4 + MongoDB
-
-[![License](https://tecnomanu.com.ar/wp-content/uploads/2017/03/manucloud_creador.png)](https://tecnomanu.com.ar)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://opensource.org/licenses/MIT)
-
-Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de usuario y un frontpanel con Nebular, listo para clonar e iniciar todos tus proyectos.
-
-
-### Instalación y configuración
-
-1. Ingresar a 'panel' e instalar las dependencias de Angular:
-```sh
-cd panel && npm install
-```
-
-2. Ahora ingresamos a la carpeta 'api', en la raiz del proyecto e instalamos las dependencias de Lumen:
-```sh
-cd ../api
-composer update
-```
-
-3. Rellenar tu archivo .env con los datos de tu base de datos (basado en MongoDB) para poder instalar las semillas con el siguiente comando:
-```sh
-php artisan db:seed
-```
-
-4. Hacer symlink de storage a public, para poder mostrar las imagenes que se vayan creando en el storage.
-```
-mkdir storage/app/public
-ln -s ../storage/app/public public/storage
-````
-> En el archivo de configuración 'api/config/filesystem' se puede configurar otras rutas y otros servicios como Amazon S3
-
-5. Esta todo casi listo, solo queda correr el servicio en localhost para crear el API_KEY que llevaría el env y listo:
-```sh
-php -S localhost:8000 -t public
-```
-
-6. Una vez iniciado el servidor del respositorio, ingresa a la ruta http://localhost:8000/key para copiar la clave de 32 chars y luego pegarlo en tu archivo .env (APP_KEY).
-
-7. Listo! Configura tu Lumen y Panel a gusto.
-
-
-[![N|Solid](http://tecnomanu.com.ar/wp-content/uploads/2017/03/manucloud_createby.png)](https://manu.cloud)
-
-# Creditos y Plataformas
-### Ngx-Admin by Akeveo [Repositorio](https://github.com/akveo/ngx-admin)
-### Nebular by Akeveo [Repositorio]("https://akveo.github.io/nebular)
-### Lumen PHP Framework [Repositorio](https://github.com/laravel/lumen-framework)
-### JWT-AUTH by tymondesigns[Repositorio](https://github.com/tymondesigns/jwt-auth)
-
-
-# Estados de los repositorios
-
-## Ngx-Admin by Akeveo
-[![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin)
-[![Join the chat at https://gitter.im/ng2-admin/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ng2-admin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-# Nebular by Akeveo
-[![Build Status](https://travis-ci.org/akveo/nebular.svg?branch=master)](https://travis-ci.org/akveo/nebular)
-
 # Lumen PHP Framework
+
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
 [![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
 [![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
 [![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
 [![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
 
-# JWT-AUTH by tymondesigns
-[![Build Status](http://img.shields.io/travis/tymondesigns/jwt-auth/master.svg?style=flat-square)](https://travis-ci.org/tymondesigns/jwt-auth)
-[![Codecov branch](https://img.shields.io/codecov/c/github/tymondesigns/jwt-auth/develop.svg?style=flat-square)](https://codecov.io/github/tymondesigns/jwt-auth)
-[![Latest Version](http://img.shields.io/packagist/v/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)
-[![Latest Dev Version](https://img.shields.io/packagist/vpre/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth#dev-develop)
-[![Monthly Downloads](https://img.shields.io/packagist/dm/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)
+Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+
+## Official Documentation
+
+Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

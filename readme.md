@@ -1,10 +1,10 @@
 # Panel Administrador Base creado con Angular + Lumen + JWT
-## Akveo ngx-admin v4.6 + Lumen 5.8 + JWT 1.0-rc4 + MongoDB
+## Akveo Nebular + Lumen 8 + JWT 1.0-rc4 + MongoDB
 
 [![License](http://manu.cloud/wp-content/uploads/2017/03/manucloud_creador.png)](https://manu.cloud)
 [![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://opensource.org/licenses/MIT)
 
-Este repositorio cuenta con la version de Lumen 5.8 + JWT 1.0-rc4 para login de usuario y panel Akveo Ngx-admin v3, listo para clonar e iniciar todos tus proyectos.
+Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de usuario y un frontpanel con Nebular, listo para clonar e iniciar todos tus proyectos.
 
 ## Instalación y configuración
 
@@ -28,13 +28,22 @@ php -S localhost:8000 -t public
 php artisan db:seed
 ```
 
-4. Listo! Configura tu Lumen y Panel a gusto.
+5. Hacer symlink de storage a public, para poder mostrar las fotos que se vayan creando.
+```
+mkdir storage/app/public
+ln -s ../storage/app/public public/storage
+````
+
+
+6. Listo! Configura tu Lumen y Panel a gusto.
+
 
 [![N|Solid](http://manu.cloud/wp-content/uploads/2017/03/manucloud_createby.png)](https://manu.cloud)
 
 # Creditos y Plataformas
 
 ### Ngx-Admin by Akeveo <a target="_blank" href="https://github.com/akveo/ngx-admin">Repositorio</a>
+### Nebular by Akeveo <a target="_blank" href="https://akveo.github.io/nebular/">Repositorio</a>
 ### Lumen PHP Framework <a target="_blank" href="https://github.com/laravel/lumen-framework">Repositorio</a>
 ### JWT-AUTH by tymondesigns <a target="_blank" href="https://github.com/tymondesigns/jwt-auth">Repositorio</a>
 
@@ -44,6 +53,9 @@ php artisan db:seed
 [![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin)
 [![Join the chat at https://gitter.im/ng2-admin/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ng2-admin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Dependency Status](https://david-dm.org/akveo/ngx-admin/status.svg)](https://david-dm.org/akveo/ng2-admin)
+
+# Nebular by Akeveo
+[![Build Status](https://travis-ci.org/akveo/nebular.svg?branch=master)](https://travis-ci.org/akveo/nebular)
 
 # Lumen PHP Framework
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
