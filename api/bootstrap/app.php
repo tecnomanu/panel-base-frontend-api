@@ -96,6 +96,7 @@ $app->register(\Illuminate\Mail\MailServiceProvider::class);
 
 //Vendors
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Intervention\Image\ImageServiceProviderLumen::class);
 
 //Alias
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
