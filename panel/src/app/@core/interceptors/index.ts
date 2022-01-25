@@ -1,2 +1,2 @@
 export {AuthGuard} from './auth-guard.service';
-export {AuthInterceptor} from './auth-interceptor.service';
+export {TokenInterceptor} from './token-interceptor.service';

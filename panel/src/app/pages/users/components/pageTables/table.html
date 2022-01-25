@@ -1,60 +1,66 @@
 <div class="row">
   <div class="col-md-12 col-table">
-    <nb-card [nbSpinner]="loadingData" nbSpinnerSize="large" nbSpinnerStatus="success">
+    <nb-card [nbSpinner]="loading" nbSpinnerSize="large" nbSpinnerStatus="success">
       <nb-card-header>
-        <span>Usuarios</span>
+        <span>
+          <nb-icon icon="people-outline"></nb-icon> Usuarios
+        </span>
         <span class="float-right" *nbIsGranted="['create', 'users']">
-          <button class="btn btn-success btn-sm" routerLink="../create"><i class="ion-plus"></i> Nuevo</button>
+          <button nbButton routerLink="create" status="success" size="small">
+            <nb-icon icon="person-add-outline"></nb-icon><span class="d-none d-lg-inline d-md-inline">Nuevo</span>
+          </button>
         </span>
       </nb-card-header>
       <nb-card-body>
-        <search-box (onChangeValue)="getPage(1, $event)" (onOptionChange)="refreshPage($event)" [baConfPage]="options" [show]="{export : false}"></search-box>
-        <div class="table-container mt-2">
-        <table class="table table-striped">
-          <thead>
-            <tr class="no-top-border">
-              <th style="width: 100px;">Acción</th>
-              <th style="width: 200px;">Nombre completo</th>
-              <th>Usuario</th>
-              <th>Rol</th>
-              <th>Provider</th>
-              <th>Email</th>
-              <th>Nacimiento</th>
-            </tr>
-          </thead>
-          <tbody *ngIf="asyncDataTable">
-            <tr *ngFor="let user of asyncDataTable | async | paginate: config" class="no-top-border">
-              <td>
-                <span class="btn-inline" *ngIf="user.role != 'root' || (user.role == 'root' && userService.user.role == 'root')">
-                  <button class="btn btn-success" *nbIsGranted="['edit', 'users']"
-                          type="button"
-                          (click)="editItem(user._id)">
-                    <i class="ion-edit"></i>
-                  </button>
-                  <button class="btn btn-danger" *nbIsGranted="['remove', 'users']"
-                          type="button"
-                          (click)="deleteModal.show(user._id)">
-                    <i class="ion-android-close"></i>
-                  </button>
-                </span>
-              </td>
-              <td class="nowrap">{{user.first_name}} {{user.last_name}}</td>
-              <td class="nowrap">{{user.username}}</td>
-              <th>{{user.role_name}}</th>
-              <th>{{user.role == 'provider' || user.role == 'userProvider' ? user.provider.text : '-'}}</th>
-              <td class="align-left">{{user.email}}</td>
-              <td class="align-left"> {{user.birthday ? (user.birthday | date:"dd-MM-yyyy" ) : '-'}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <search-box (onChangeValue)="getPage(1)" [baConfPage]="options" [show]="{export : true}"></search-box>
+        <div class="table-container">
+          <table class="table table-striped">
+            <thead>
+              <tr class="no-top-border">
+                <th style="min-width:100px; max-width: 100px;">Acción</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="config.totalItems > 0">
+              <tr *ngFor="let user of asyncDataTable | async | paginate: config" class="no-top-border">
+                <td>
+                  <span class="btn-inline">
+                    <button nbButton *nbIsGranted="['edit', 'users']" status="success" size="tiny" type="button" nbTooltip="Ver"
+                      (click)="editItem(user['_id'])">
+                      <nb-icon icon="edit"></nb-icon>
+                    </button>
+                    <ng-container *ngIf="getUserId() != user._id">
+                      <button nbButton *nbIsGranted="['remove', 'users']" status="danger" size="tiny" type="button" nbTooltip="Borrar"
+                      (click)="deleteModal.show(user['_id'])">
+                      <nb-icon icon="close"></nb-icon>
+                      </button>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="nowrap">{{user['username']}}</td>
+                <td class="nowrap">{{user['role_name']}}</td>
+                <td class="nowrap">{{user['email']}}</td>
+                <td class="nowrap">{{user['first_name']}}</td>
+                <td class="nowrap">{{user['last_name']}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <nb-alert status="primary" *ngIf="config.totalItems <= 0">
+            No se encontraron resultados.
+          </nb-alert>
+        </div>
       </nb-card-body>
     </nb-card>
     <div class="text-center">
       <pagination-component [config]="config" (pageChange)="getPage($event)"></pagination-component>
-      <!--<pagination-controls (pageChange)="getPage($event)" id="table"></pagination-controls>-->
     </div>
   </div>
 </div>
 
-<custom-modal #deleteModal [baModalConfig]="{title:'Eliminar Usuario',body:'Esta seguro que desea eliminar este elemento?', buttonOkey: 'Eliminar', buttonOkeyColor: 'btn-danger', buttonOkeyIcon : 'ion-trash-a'}" [disabled]="deleting" (onOkey)="deleteItem($event)"></custom-modal>
+<custom-modal #deleteModal
+  [baModalConfig]="{title:'Eliminar Usuario',body:'Esta seguro que desea eliminar este elemento?', buttonOkey: 'Eliminar', buttonOkeyColor: 'danger', buttonOkeyIcon : 'trash-outline'}"
+  [disabled]="deleting" (onOkey)="deleteItem($event)"></custom-modal>

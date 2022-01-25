@@ -1,0 +1,47 @@
+<ngx-auth-block>
+  <!--<h5 class="title">Inicio de Sesión</h5>-->
+  <h5 class="form-text sub-title">Ahora vamos a verificar tu usuario.</h5>
+  <p class="text-center">Pega en el siguiente campo, el codigo que hemos enviado a tu coreo electronico para que validemos tu usuario.</p>
+  <form (ngSubmit)="verify()" #form="ngForm" autocomplete="nope">
+    <nb-alert accent="error" class="text-center" *ngIf="errors && errors.length > 0 && !submitted">
+      <div *ngFor="let error of errors">{{ error }}</div>
+    </nb-alert>
+    <nb-alert accent="success" class="text-center" *ngIf="messages && messages.length > 0 && !submitted">
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </nb-alert>
+    <div class="form-group">
+      <label for="input-username" class="sr-only">Codigo de Verificación</label>
+      <input nbInput
+             [(ngModel)]="verification_code"
+             class="text-center"
+             #code="ngModel"
+             id="input-verification-code"
+             name="code"
+             placeholder="Codigo de validación"
+             autofocus
+             fullWidth
+             fieldSize="large"
+             [disabled]="submitted"
+             [status]="code.dirty ? (code.invalid  ? 'danger' : 'success') : 'basic'"
+             required="required"
+             [attr.aria-invalid]="code.invalid && code.touched ? true : null">
+      <ng-container *ngIf="code.invalid && code.touched">
+        <p class="caption status-danger text-center" *ngIf="code.errors?.required">
+          El codigo de validación es requerido
+        </p>
+      </ng-container>
+    </div>
+    <button nbButton
+            status="success"
+            fullWidth
+            [disabled]="submitted || !form.valid" class="btn btn-block btn-hero-success"
+            [class.btn-pulse]="submitted">
+      Validar mi usuario
+    </button>
+  </form>
+  <hr/>
+  <section class="another-action text-center" aria-label="Register">
+    Si aun no recibiste tu codigo, revisa la carpeta <br> <strong>"correo no deseado/spam"</strong> o utiliza el siguiente botón para que reenviemos uno nuevo.<br> 
+    <button nbButton type="button" size="small" status="info" (click)="sendNewCode()" [disabled]="submitted"><strong>Reeviar Codigo</strong></button>
+  </section>
+</ngx-auth-block>

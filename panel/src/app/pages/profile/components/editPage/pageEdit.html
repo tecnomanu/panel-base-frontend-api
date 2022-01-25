@@ -1,0 +1,78 @@
+<form [formGroup]="formUser" (ngSubmit)="updateData(formUser.value)">
+  <div class="row justify-content-md-center" *ngIf="formUser">
+    <div class="col-md-6">
+      <nb-card [nbSpinner]="loadingData" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="person-outline"></nb-icon> Datos de Usuario
+        </nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="email">Correo Electronico</label>
+              <input type="text" nbInput fullWidth formControlName="email" id="email" placeholder="un@email.com"
+                required>
+            </div>
+            <div class="col-md-6">
+              <picture-uploader [picture]="getImage()" (onChangePicture)="handleChangeImage($event)"
+                [config]="{rounded: true, max_size: 4000, max_width: '100px'}"></picture-uploader>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+      <nb-card [nbSpinner]="loadingData" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="briefcase-outline"></nb-icon> Datos Personales
+        </nb-card-header>
+        <nb-card-body>
+          <div class="form-group">
+            <label for="first_name">Nombre</label>
+            <input type="text" nbInput fullWidth formControlName="first_name" id="first_name" placeholder="Nombre"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="last_name">Apellido</label>
+            <input type="text" nbInput fullWidth formControlName="last_name" id="last_name" placeholder="Apellido">
+          </div>
+          <div class="form-group">
+            <label>Fecha de Nacimiento</label>
+            <input nbInput [nbDatepicker]="birthdaypicker" fullWidth id="birthday" formControlName="birthday"
+              autocomplete="off">
+            <nb-datepicker #birthdaypicker format="dd-MM-yyyy"></nb-datepicker>
+          </div>
+        </nb-card-body>
+      </nb-card>
+
+      <nb-card [nbSpinner]="loadingData" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="lock-outline"></nb-icon> Cambio de contraseña
+        </nb-card-header>
+        <nb-card-body>
+          <p>
+            <nb-icon status="warning" icon="alert-triangle-outline"></nb-icon>
+            Procesada con cuidado, anote bien la nueva contraseña y no la comparta con nadie.
+          </p>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="password">Password</label>
+              <input type="password" nbInput formControlName="password" id="password" placeholder="********">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="password_confirmation">Confirmar Password</label>
+              <input type="password" nbInput formControlName="password_confirmation" id="password_confirmation"
+                placeholder="********">
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+      <div class="alert alert-danger" role="alert" *ngIf="messageError">
+        <div [innerHTML]="messageError"></div>
+      </div>
+      <div class="form-group text-center">
+        <button nbButton size="small" type="submit" status="success" [disabled]="!formUser.valid || submitted || !formValid">
+          <nb-icon [icon]="submitted ? 'refresh-outline': 'edit'" [ngClass]="{'fa-spin' : submitted}"></nb-icon>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

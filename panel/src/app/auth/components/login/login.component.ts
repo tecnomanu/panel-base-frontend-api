@@ -3,13 +3,13 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { NbAuthService, NbAuthResult, NB_AUTH_OPTIONS} from '@nebular/auth';
-import { SITE_CONF } from '../../../@core/core.constants';
+import {NB_AUTH_OPTIONS, NbAuthResult, NbAuthService} from '@nebular/auth';
+import {SITE_CONF} from '../../../@core/core.constants';
 
-declare var confetti: any;
+declare let confetti: any;
 
 @Component({
     selector: 'ngx-login',
@@ -17,8 +17,8 @@ declare var confetti: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgxLoginComponent {
-    siteConf:any=SITE_CONF;
-    
+    siteConf: any = SITE_CONF;
+
     redirectDelay: number = 0;
     showMessages: any = {};
     strategy: string = '';
@@ -26,37 +26,26 @@ export class NgxLoginComponent {
     messages: string[] = [];
     user: any = {};
     submitted: boolean = false;
-    //socialLinks: NbAuthSocialLink[] = [];
+    // socialLinks: NbAuthSocialLink[] = [];
     rememberMe = false;
 
-    logo= "assets/images/logo.png";
+    logo = 'assets/images/logo.svg';
 
     constructor(protected service: NbAuthService,
-                @Inject(NB_AUTH_OPTIONS) protected options = {},
-                protected cd: ChangeDetectorRef,
-                private elRef:ElementRef,
-                protected router: Router) {
+        @Inject(NB_AUTH_OPTIONS) protected options = {},
+        protected cd: ChangeDetectorRef,
+        private elRef: ElementRef,
+        protected _router: Router) {
 
         this.redirectDelay = this.options['forms'].login.redirectDelay;
         this.showMessages = this.options['forms'].login.showMessages;
         this.strategy = this.options['forms'].login.strategy;
         this.rememberMe = this.options['forms'].login.rememberMe;
 
-        this.service.logout('email').subscribe(result=>{});
-
-        //Activate if need confeti on logo to celebrate any date
-        // let date = new Date();
-        // if(date.getMonth() == 6){
-        //     this.logo = "assets/images/logo_happy_birthday.png";
-        //     console.log("Feliz Cumple!!!");
-        //     setTimeout(()=>{
-        //         let button =  this.elRef['nativeElement'].querySelector('#logo');
-        //         if(button){
-        //             console.log(button);
-        //             confetti(button, {angle: 90, spread: 180, startVelocity: 70, elementCount: 50, decay: 0.75, colors: ['#E68F17', '#FAB005', '#FA5252', '#E64980', '#BE4BDB', '#0B7285', '#15AABF', '#EE1233', '#40C057']});
-        //         }
-        //     }, 300);
-        // }
+        this.service.isAuthenticated().subscribe((authenticated: boolean) => {
+            if (authenticated)
+                this._router.navigate(['pages']);
+        });
     }
 
     login(): void {
@@ -68,27 +57,36 @@ export class NgxLoginComponent {
 
             if (result.isSuccess()) {
                 this.messages = result.getMessages();
+                const response = result.getResponse();
+
+                if (response && response['body'] && response['body']['user']) {
+                    localStorage.setItem('user', JSON.stringify(response['body']['user']));
+                }
+
+                const redirect = result.getRedirect();
+                if (redirect) {
+                    setTimeout(() => this._router.navigateByUrl(redirect), this.redirectDelay);
+                } else {
+                    this._router.navigate(['panel']);
+                }
             } else {
-                this.errors = result["response"] && result["response"].error && result["response"].error != 'invalid_credentials' ? result["response"].error : result.getErrors();
-            }
-
-            let response = result.getResponse();
-            if(response && response['body'] && response['body']['user'])
-                localStorage.setItem("user", JSON.stringify(response['body']['user']));
-
-            const redirect = result.getRedirect();
-            if (redirect) {
-                setTimeout(() => {
-                    return this.router.navigateByUrl(redirect);
-                }, this.redirectDelay);
+                if (result['response'].status === 0) {
+                    this.errors = ['Lo sentimos! Hay un problema con nuestros servidores, intentalo mas tarde.'];
+                } else {
+                    this.errors = result['response'] && result['response'].error &&
+                        result['response'].error != 'invalid_credentials' ?
+                        result['response'].error : result.getErrors();
+                }
             }
             this.cd.detectChanges();
+        }, (err) => {
+            console.log(err);
         });
     }
 
     getConfigValue(key: string): any {
-        //console.log(NbAuthStrategy.getOption(key));
-        //return this.options[key];
-        return null; //getDeepFromObject(this.options, key, null);
+    // console.log(NbAuthStrategy.getOption(key));
+    // return this.options[key];
+        return null; // getDeepFromObject(this.options, key, null);
     }
 }

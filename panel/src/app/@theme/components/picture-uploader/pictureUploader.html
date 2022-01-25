@@ -1,23 +1,115 @@
-<div class="picture-group" [ngClass]="{uploading: uploadInProgress, 'center-group': position == 'center', 'disabled': disabled}">
-    <div class="picture-wrapper" (click)="bringFileSelector();">
-        <img [src]="selectedPicture">
-
-        <div class="loading" *ngIf="uploadInProgress && !config.hide_loader">
-            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-        </div>
+<div class="picture-group"
+      [style.width]="config.max_width ? config.max_width : 'auto'"
+     [ngClass]="{uploading: uploadInProgress, 'center-group': position == 'center', 'disabled': disabled}">
+  <div class="picture-wrapper" (click)="bringFileSelector();" [ngClass]="{'group-rounded' : config['rounded']}"
+       [style.backgroundImage]="'url(' + selectedPicture + ')'">
+    <div class="loading" *ngIf="uploadInProgress && !config.hide_loader">
+      <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
-    <i class="ion-ios-close-outline" (click)="removePicture()" *ngIf="picture && canDelete"></i>
-    <a href class="change-picture" [ngClass]="{'broken' : linkIsBroken}" (click)="bringFileSelector();" *ngIf="!config.hide_message">
+  </div>
+  <i class="ion-ios-close-outline" (click)="removePicture()" *ngIf="picture && canDelete"></i>
+  <a href class="change-picture" [ngClass]="{'broken' : linkIsBroken}" (click)="bringFileSelector();"
+     *ngIf="!config.hide_message">
     <span *ngIf="!linkIsBroken">
       Elegir una imagen
     </span>
     <span *ngIf="linkIsBroken">
       Elija otra foto, este link esta roto
     </span>
-    </a>
-    <input #fileUpload ngFileSelect
-           (uploadOutput)="beforeUpload($event)"
-           [required]="required"
-           accept="image/*"
-           type="file" hidden="true">
+  </a>
+  <input #fileUpload ngFileSelect
+         [required]="required"
+         (change)="changePicture($event, cropDialog)"
+         accept="image/*"
+         type="file" hidden="true">
+
+  <!--    (uploadOutput)="beforeUpload($event)"-->
 </div>
+
+<ng-template #cropDialog let-data let-ref="dialogRef">
+  <div class="row crop-view">
+    <div class="col-md-8">
+      <nb-card [nbSpinner]="!showCropper" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="crop"></nb-icon>
+          Herramienta de corte
+        </nb-card-header>
+        <nb-card-body>
+          <image-cropper
+            [style.height]="'height: 200px;'"
+            [imageChangedEvent]="imageChangedEvent"
+            [containWithinAspectRatio]="containWithinAspectRatio"
+            [maintainAspectRatio]="maintainAspectRatio"
+            [aspectRatio]="1"
+            [resizeToWidth]="200"
+            [cropperMinWidth]="128"
+            [onlyScaleDown]="true"
+            [roundCropper]="false"
+            [style.display]="showCropper ? null : 'none'"
+            format="png"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (cropperReady)="cropperReady($event)"
+            (loadImageFailed)="loadImageFailed()"
+            [canvasRotation]="canvasRotation"
+            [transform]="transform"
+            [alignImage]="'left'"
+          ></image-cropper>
+        </nb-card-body>
+        <nb-card-footer class="text-center">
+          <button nbButton size="small" (click)="rotateLeft()" class="btn" status="info" nbTooltip="Rotar Izquierda"
+                  [disabled]="!showCropper">
+            <nb-icon icon="corner-up-left"></nb-icon>
+          </button>
+          <button nbButton size="small" (click)="rotateRight()" class="btn" status="basic" nbTooltip="Rotar Derecha"
+                  [disabled]="!showCropper">
+            <nb-icon icon="corner-up-right"></nb-icon>
+          </button>
+          <button nbButton size="small" (click)="flipVertical()" class="btn" status="basic" nbTooltip="Espejar Vertical"
+                  [disabled]="!showCropper">
+            <nb-icon icon="flip"></nb-icon>
+          </button>
+          <button nbButton size="small" (click)="flipHorizontal()" class="btn" status="basic" nbTooltip="Espejar Horizontal"
+                  [disabled]="!showCropper">
+            <nb-icon icon="flip-2"></nb-icon>
+          </button>
+          <button nbButton size="small" (click)="zoomIn()" class="btn" status="basic" nbTooltip="Más Zoom" [disabled]="!showCropper">
+            <nb-icon icon="maximize-outline"></nb-icon>
+          </button>
+          <button nbButton size="small" (click)="zoomOut()" class="btn" status="basic" nbTooltip="Menos Zoom"
+                  [disabled]="!showCropper">
+            <nb-icon icon="minimize-outline"></nb-icon>
+          </button>
+          <!--                    <button nbButton class="btn" status="basic" (click)="toggleContainWithinAspectRatio()"-->
+          <!--                            [nbTooltip]="containWithinAspectRatio ? 'Mantener aspecto' : 'Cubrir todo'" [disabled]="!showCropper">-->
+          <!--                        <nb-icon [icon]="containWithinAspectRatio ? 'collapse' : 'expand'"></nb-icon>-->
+          <!--                    </button>-->
+        </nb-card-footer>
+      </nb-card>
+    </div>
+    <div class="col-md-4">
+      <nb-card [nbSpinner]="!showCropper" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="image"></nb-icon>
+          Vista Previa
+        </nb-card-header>
+        <nb-card-body>
+          <img [src]="croppedImage"/>
+        </nb-card-body>
+        <nb-card-footer>
+          <button nbButton size="small" [disabled]="!showCropper" (click)="save()" class="btn" status="success"
+                  nbTooltip="Se guardará la imagén">Guardar
+          </button>
+          <button nbButton size="small" (click)="ref.close()" class="btn" status="basic" nbTooltip="No se realizará ningun cambio">
+            Cancelar
+          </button>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</ng-template>

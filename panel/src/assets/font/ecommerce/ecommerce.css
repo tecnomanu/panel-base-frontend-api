@@ -1,0 +1,88 @@
+	/*
+  	Ecommerce icon font: Ecommerce
+  	Creation date: 14/08/2018 11:11
+  	*/
+
+@font-face {
+  font-family: "Ecommerce";
+  src: url("./Ecommerce.eot");
+  src: url("./Ecommerce.eot?#iefix") format("embedded-opentype"),
+       url("./Ecommerce.woff") format("woff"),
+       url("./Ecommerce.ttf") format("truetype"),
+       url("./Ecommerce.svg#Ecommerce") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Ecommerce";
+    src: url("./Ecommerce.svg#Ecommerce") format("svg");
+  }
+}
+
+[class^="zf-"]:before, [class*=" zf-"]:before,
+[class^="zf-"]:after, [class*=" zf-"]:after {
+    font-family: Ecommerce;
+    font-style: normal;
+}
+
+.zf-ecommerce-001-box:before { content: "\f100"; }
+.zf-ecommerce-002-shopping:before { content: "\f101"; }
+.zf-ecommerce-003-tag:before { content: "\f102"; }
+.zf-ecommerce-004-shopping-1:before { content: "\f103"; }
+.zf-ecommerce-005-credit-card:before { content: "\f104"; }
+.zf-ecommerce-006-hand-bag:before { content: "\f105"; }
+.zf-ecommerce-007-piggy-bank:before { content: "\f106"; }
+.zf-ecommerce-008-wallet:before { content: "\f107"; }
+.zf-ecommerce-009-wishlist:before { content: "\f108"; }
+.zf-ecommerce-010-hand:before { content: "\f109"; }
+.zf-ecommerce-011-call-center:before { content: "\f10a"; }
+.zf-ecommerce-012-online-shopping:before { content: "\f10b"; }
+.zf-ecommerce-013-shopping-basket:before { content: "\f10c"; }
+.zf-ecommerce-014-fashion:before { content: "\f10d"; }
+.zf-ecommerce-015-dress:before { content: "\f10e"; }
+.zf-ecommerce-016-manager:before { content: "\f10f"; }
+.zf-ecommerce-017-shopping-bag:before { content: "\f110"; }
+.zf-ecommerce-018-search:before { content: "\f111"; }
+.zf-ecommerce-019-guarantee:before { content: "\f112"; }
+.zf-ecommerce-020-delivery:before { content: "\f113"; }
+.zf-ecommerce-021-courier:before { content: "\f114"; }
+.zf-ecommerce-022-favourite:before { content: "\f115"; }
+.zf-ecommerce-023-phone:before { content: "\f116"; }
+.zf-ecommerce-024-shop:before { content: "\f117"; }
+.zf-ecommerce-025-cashbox:before { content: "\f118"; }
+.zf-ecommerce-026-cargo-ship:before { content: "\f119"; }
+.zf-ecommerce-027-signboard:before { content: "\f11a"; }
+.zf-ecommerce-028-voucher:before { content: "\f11b"; }
+.zf-ecommerce-029-high-heels:before { content: "\f11c"; }
+.zf-ecommerce-030-info:before { content: "\f11d"; }
+.zf-ecommerce-031-currency:before { content: "\f11e"; }
+.zf-ecommerce-032-location:before { content: "\f11f"; }
+.zf-ecommerce-033-shopping-cart:before { content: "\f120"; }
+.zf-ecommerce-034-ribbon:before { content: "\f121"; }
+.zf-ecommerce-035-hanger:before { content: "\f122"; }
+.zf-ecommerce-036-credit-card-1:before { content: "\f123"; }
+.zf-ecommerce-037-box-1:before { content: "\f124"; }
+.zf-ecommerce-038-trolley:before { content: "\f125"; }
+.zf-ecommerce-039-air-freight:before { content: "\f126"; }
+.zf-ecommerce-040-delivery-truck:before { content: "\f127"; }
+.zf-ecommerce-041-shield:before { content: "\f128"; }
+.zf-ecommerce-042-card-payment:before { content: "\f129"; }
+.zf-ecommerce-043-locker:before { content: "\f12a"; }
+.zf-ecommerce-044-stopwatch:before { content: "\f12b"; }
+.zf-ecommerce-045-speech-bubble:before { content: "\f12c"; }
+.zf-ecommerce-046-telephone:before { content: "\f12d"; }
+.zf-ecommerce-047-libra:before { content: "\f12e"; }
+.zf-ecommerce-048-hourglass:before { content: "\f12f"; }
+.zf-ecommerce-049-filter:before { content: "\f130"; }
+.zf-ecommerce-050-money:before { content: "\f131"; }
+.zf-alert:before {
+    font-family: 'font awesome 5 free';
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1;
+    width: 1em;
+    height: 1em;
+    content: "\f0f3";
+}

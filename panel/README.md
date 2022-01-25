@@ -1,70 +1,75 @@
-# ngx-admin [<img src="https://i.imgur.com/oMcxwZ0.png" alt="Eva Design System" height="20px" />](https://eva.design) [![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin) [![Dependency Status](https://david-dm.org/akveo/ngx-admin/status.svg)](https://david-dm.org/akveo/ng2-admin)
+# Panel Administrador Base creado con Angular + Lumen + JWT
+## Akveo Nebular + Lumen 8 + JWT 1.0-rc4 + MongoDB
 
-[Who uses ngx-admin?](https://github.com/akveo/ngx-admin/issues/1645)| [Documentation](https://akveo.github.io/ngx-admin/?utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes) | [Installation Guidelines](https://akveo.github.io/ngx-admin/docs/getting-started/what-is-ngxadmin?utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes)
+[![License](https://tecnomanu.com.ar/wp-content/uploads/2017/03/manucloud_creador.png)](https://tecnomanu.com.ar)
+[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://opensource.org/licenses/MIT)
 
-# Admin template based on Angular 8+ and <a href="https://github.com/akveo/nebular">Nebular</a>
-<a target="_blank" href="http://akveo.com/ngx-admin/pages/dashboard?theme=corporate&utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=main_pic"><img src="https://i.imgur.com/IhoaWxa.png"/></a>
-
-### Backend Integration Bundles
-Easy way to integrate ngx-admin with .NET, Node.js, Java or PHP. [Checkout our Store](https://store.akveo.com/?utm_source=github&utm_medium=ngx_admin_readme) for ready to use Backend Bundles.
+Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de usuario y un frontpanel con Nebular, listo para clonar e iniciar todos tus proyectos.
 
 
-### With 3 stunning visual themes
+### Instalación y configuración
 
-#### Dark
+1. Ingresar a 'panel' e instalar las dependencias de Angular:
+```sh
+cd panel && npm install
+```
 
-<a target="_blank" href="http://akveo.com/ngx-admin/pages/dashboard?theme=default&utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes"><img src="https://i.imgur.com/iam0CaJ.png"/></a>
+2. Ahora ingresamos a la carpeta 'api', en la raiz del proyecto e instalamos las dependencias de Lumen:
+```sh
+cd ../api
+composer update
+```
 
-#### Cosmic
-<a target="_blank" href="http://akveo.com/ngx-admin/pages/dashboard?theme=cosmic&utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes"><img src="https://i.imgur.com/8KwE112.png"/></a>
+3. Rellenar tu archivo .env con los datos de tu base de datos (basado en MongoDB) para poder instalar las semillas con el siguiente comando:
+```sh
+php artisan db:seed
+```
 
-#### Corporate
-<a target="_blank" href="http://akveo.com/ngx-admin/pages/dashboard?theme=corporate&utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes"><img src="https://i.imgur.com/DYtQ2Qc.png"/></a>
+4. Hacer symlink de storage a public, para poder mostrar las imagenes que se vayan creando en el storage.
+```
+mkdir storage/app/public
+ln -s ../storage/app/public public/storage
+````
+> En el archivo de configuración 'api/config/filesystem' se puede configurar otras rutas y otros servicios como Amazon S3
 
-### What's included:
+5. Esta todo casi listo, solo queda correr el servicio en localhost para crear el API_KEY que llevaría el env y listo:
+```sh
+php -S localhost:8000 -t public
+```
 
-- Angular 7+ & Typescript
-- Bootstrap 4+ & SCSS
-- Responsive layout
-- RTL support
-- High resolution
-- Flexibly configurable themes with **hot-reload** (3 themes included)
-- Authentication module with multiple providers
-- 40+ Angular Components
-- 60+ Usage Examples
+6. Una vez iniciado el servidor del respositorio, ingresa a la ruta http://localhost:8000/key para copiar la clave de 32 chars y luego pegarlo en tu archivo .env (APP_KEY).
 
-### Demo
+7. Listo! Configura tu Lumen y Panel a gusto.
 
-<a target="_blank" href="http://akveo.com/ngx-admin/">Live Demo</a>
 
-## Documentation
-This template is using [Nebular](https://github.com/akveo/nebular) modules set, [here you can find documentation and other useful articles](https://akveo.github.io/nebular/docs/guides/install-based-on-starter-kit).
+[![N|Solid](http://tecnomanu.com.ar/wp-content/uploads/2017/03/manucloud_createby.png)](https://manu.cloud)
 
-### Empty starter kit
-Don't need all the pages and modules and just looking for an empty starter kit for your next project? Check out our [starter-kit branch](https://github.com/akveo/ngx-admin/tree/starter-kit).
+# Creditos y Plataformas
+### Ngx-Admin by Akeveo [Repositorio](https://github.com/akveo/ngx-admin)
+### Nebular by Akeveo [Repositorio]("https://akveo.github.io/nebular)
+### Lumen PHP Framework [Repositorio](https://github.com/laravel/lumen-framework)
+### JWT-AUTH by tymondesigns[Repositorio](https://github.com/tymondesigns/jwt-auth)
 
-### AngularJS 1.x version
-Here you can find AngularJS 1.x based version: [Blur Admin](http://akveo.github.io/blur-admin/)
 
-## BrowserStack
-This project runs its tests on multiple desktop and mobile browsers using [BrowserStack](http://www.browserstack.com).
+# Estados de los repositorios
 
-<img src="https://cloud.githubusercontent.com/assets/131406/22254249/534d889e-e254-11e6-8427-a759fb23b7bd.png" height="40" />
+## Ngx-Admin by Akeveo
+[![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin)
+[![Join the chat at https://gitter.im/ng2-admin/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ng2-admin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## More from Akveo
+# Nebular by Akeveo
+[![Build Status](https://travis-ci.org/akveo/nebular.svg?branch=master)](https://travis-ci.org/akveo/nebular)
 
-- [Eva Icons](https://github.com/akveo/eva-icons) - 480+ beautiful Open Source icons
-- [Nebular](https://github.com/akveo/nebular) - Angular Components, Auth and Security
+# Lumen PHP Framework
+[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
+[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
+[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
+[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
+[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
 
-### How can I support developers?
-- Star our GitHub repo :star:
-- Create pull requests, submit bugs, suggest new features or documentation updates :wrench:
-- Follow us on [Twitter](https://twitter.com/akveo_inc) :feet:
-- Like our page on [Facebook](https://www.facebook.com/akveo/) :thumbsup:
-
-### Looking for engineering services? 
-Visit [our homepage](http://akveo.com/) or simply leave us a message to [contact@akveo.com](mailto:contact@akveo.com). We will be happy to work with you!
-
-### From Developers
-Made with :heart: by [Akveo team](http://akveo.com/). Follow us on [Twitter](https://twitter.com/akveo_inc) to get the latest news first!
-We're always happy to receive your feedback!
+# JWT-AUTH by tymondesigns
+[![Build Status](http://img.shields.io/travis/tymondesigns/jwt-auth/master.svg?style=flat-square)](https://travis-ci.org/tymondesigns/jwt-auth)
+[![Codecov branch](https://img.shields.io/codecov/c/github/tymondesigns/jwt-auth/develop.svg?style=flat-square)](https://codecov.io/github/tymondesigns/jwt-auth)
+[![Latest Version](http://img.shields.io/packagist/v/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)
+[![Latest Dev Version](https://img.shields.io/packagist/vpre/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth#dev-develop)
+[![Monthly Downloads](https://img.shields.io/packagist/dm/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)

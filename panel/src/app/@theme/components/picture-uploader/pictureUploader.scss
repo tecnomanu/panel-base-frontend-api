@@ -1,34 +1,53 @@
 @import '../../styles/themes';
-body{
-  padding: 132px;
-}
+
 @include nb-install-component() {
   .picture-group {
-    border: 1px dashed #b8b8b8;
+    //border: 1px dashed #b8b8b8;
     height: auto;
     position: relative;
     cursor: pointer;
     display: flex;
+    max-width: 200px;
 
-    &.disabled{
+    &.disabled {
       cursor: default;
       filter: grayscale(1);
     }
 
-    &.center-group{
+    &.center-group {
       margin: auto;
     }
+
     .picture-wrapper {
       display: flex;
       overflow: hidden;
       align-items: center;
+
       width: 100%;
+      border-radius: 0;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      transition: all 0.3s ease-in-out;
+      border: 2px solid #dedede;
+
+      &:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+      }
+
+      &.group-rounded {
+        border-radius: 50% !important;
+      }
     }
-    img {
+
+    /*img {
+      transition: all 0.3s ease-in-out;
       max-width: 100%;
       max-height: 100%;
       margin: auto;
-    }
+    }*/
     i {
       display: none;
       position: absolute;
@@ -41,15 +60,18 @@ body{
       height: 26px;
       border-radius: 50%;
       transition: all .3s ease-in-out;
+
       &:before {
         vertical-align: top;
         line-height: 26px;
       }
+
       &:hover {
         //background: darken(nb-theme(color-danger),5%);
         box-shadow: 1px 1px 3px black;
       }
     }
+
     a.change-picture {
       display: none;
       width: 100%;
@@ -59,19 +81,22 @@ body{
       text-decoration: none;
       position: absolute;
       bottom: 0;
-      line-height: 32px;
+      line-height: 20px;
+      padding: 10px;
       text-align: center;
 
-      &.broken{
+      &.broken {
         background: #af2c28;
       }
 
     }
+
     &:not(disabled):hover {
       i {
         display: block;
         @include animation(bounceIn, .5s);
       }
+
       .change-picture {
         display: block;
         @include animation(fadeInUp, .5s);

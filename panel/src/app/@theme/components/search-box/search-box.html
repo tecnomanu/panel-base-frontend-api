@@ -1,47 +1,26 @@
-<form (ngSubmit)="searching()" class="form-inline" >
-    <div class="input-group input-group-sm mb-2 mr-2" *ngIf="show_search">
-        <input type="text" class="form-control text-sm" value="" [(ngModel)]="baConfPage.q" [ngModelOptions]="{standalone: true}"  placeholder="Buscar..."/>
-        <span class="input-group-append">
-            <button type="button" class="btn btn-info btn-icon" (click)="searching()">
-                <i class="nb-search"></i>
-            </button>
-        </span>
-    </div>
-    <div class="input-group mb-2 mr-2" *ngIf="show_per_page">
-        <div class="dropdown" ngbDropdown>
-            <button class="btn btn-info btn-sm" type="button" ngbDropdownToggle>
-                <i class="ion-eye"></i> <span>{{baConfPage.per_page}}</span> por página <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" ngbDropdownMenu>
-                <li class="dropdown-item"
-                    *ngFor="let number of list_per_page"
-                    [ngClass]="{'active' : baConfPage.per_page == number }"
-                    (click)="changeOptions('per_page', number)"
-                >
-                    <i class="fa fa-check" *ngIf="baConfPage.per_page == number" style="margin: 0 5px 0 -15px;"></i>{{number}}
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="input-group mb-2 mr-2" *ngIf="show_order">
-        <div class="dropdown" ngbDropdown>
-            <button class="btn btn-info btn-sm" type="button" ngbDropdownToggle>
-                <i class="ion-chevron-up"></i> <span>{{getOrderText(baConfPage.order)}}</span> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" ngbDropdownMenu>
-                <li class="dropdown-item"
-                    *ngFor="let order of list_order"
-                    [ngClass]="{'active' : baConfPage.order == order.value }"
-                    (click)="changeOptions('order', order.value)"
-                >
-                    <i class="fa fa-check" *ngIf="baConfPage.order == order.value" style="margin: 0 5px 0 -15px;"></i>{{order.text}}
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="input-group mb-2 mr-2" *ngIf="customButton.show">
-        <button type="button" class="btn btn-info btn-sm" (click)="customButtonAction()">
-            <i [class]="customButton.class"></i> <span>{{customButton.text}}</span>
-        </button>
-    </div>
+<form (ngSubmit)="searching()" class="form-inline search-box-container">
+  <nb-form-field *ngIf="show_search">
+    <input type="text" nbInput fullWidth [(ngModel)]="baConfPage.q" [ngModelOptions]="{standalone: true}"
+      placeholder="Buscar..." fieldSize="small">
+    <button nbSuffix nbButton size="small" (click)="searching()" status="info">
+      <nb-icon icon="search"></nb-icon>
+    </button>
+  </nb-form-field>
+  <div class="selectors-container">
+    <nb-select *ngIf="show_per_page" (selectedChange)="changeOptions('per_page', $event)" [selected]="baConfPage.per_page" size="small"
+    status="info">
+    <nb-option *ngFor="let number of list_per_page" [value]="number"> {{number}} por página</nb-option>
+  </nb-select>
+<nb-select *ngIf="show_order" (selectedChange)="changeOptions('order', $event)" [selected]="baConfPage.order" size="small"
+    status="info">
+    <nb-option *ngFor="let order of list_order" [value]="order.value">{{order.text}}</nb-option>
+</nb-select>
+  </div>
+  
+  <!-- <div class="input-group mb-2 mr-2" *ngIf="customButton.show">
+    class="d-none d-md-block d-lg-block" 
+    <button nbButton type="button" size="small" status="info" (click)="customButtonAction()">
+      <i [class]="customButton.class"></i> <span>{{customButton.text}}</span>
+    </button>
+  </div> -->
 </form>

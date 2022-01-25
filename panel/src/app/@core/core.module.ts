@@ -8,14 +8,10 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import {
   AnalyticsService,
   LayoutService,
-  PlayerService,
-  StateService,
-  ApiService,
-  UserService
 } from './utils';
 import { NgxRoleProvider } from '../auth/role.provider';
 import { SITE_URL } from './core.constants';
-import { AuthGuard, AuthInterceptor } from './interceptors';
+import { AuthGuard, TokenInterceptor } from './interceptors';
 
 import { UserData } from './data/users';
 import { ElectricityData } from './data/electricity';
@@ -104,51 +100,84 @@ export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
 
     strategies: [
-      NbPasswordAuthStrategy.setup({
-        name: 'email',
-        baseEndpoint: SITE_URL + 'v1/auth',
-        login: {
-          endpoint: '/login',
-          defaultErrors: ['Username o Password son incorrectos, por favor intenta nuevamente.'],
-          defaultMessages: ['Has logueado satisfactoriamente!'],
-        },
-        logout: {
-          endpoint: '/logout',
-          method: 'post',
-        },
-        token: {
-          class: NbAuthJWTToken,
-          key: 'token'
-        }
-      }),
+        NbPasswordAuthStrategy.setup({
+            name: 'email',
+            baseEndpoint: SITE_URL + 'api/v1/auth/',
+            login: {
+                endpoint: 'login',
+                redirect: {
+                    success: '/panel',
+                    failure: null,
+                },
+                defaultErrors: ['Username o Password son incorrectos, por favor intenta nuevamente.'],
+                defaultMessages: ['Has logueado satisfactoriamente!'],
+            },
+            register: {
+                alwaysFail: false,
+                endpoint: 'register',
+                method: 'post',
+                requireValidToken: true,
+                redirect: {
+                    success: 'auth/verify',
+                    failure: null,
+                },
+                defaultErrors: ['Ocurrio un error, intentelo de nuevo.'],
+                defaultMessages: ['Perfecto! Ahora valida tu correo electronico.'],
+            },
+            requestPass: {
+                endpoint: 'request-password',
+                method: 'post',
+                redirect: {
+                    success: 'auth/login',
+                    failure: null,
+                },
+                defaultErrors: ['Ocurrio un error, intentelo de nuevo.'],
+                defaultMessages: ['Hemos enviado un link a tu correo para que reinicies tu password.'],
+            },
+            resetPass: {
+                endpoint: 'reset-password',
+                method: 'put',
+                redirect: {
+                    success: 'auth/login',
+                    failure: null,
+                },
+                resetPasswordTokenKey: 'reset_token',
+                defaultErrors: ['Ocurrio un error, intentelo de nuevo.'],
+                defaultMessages: ['Perfecto! Ya puedes volver a ingresar con tu nuevo password.'],
+            },
+            logout: {
+                endpoint: 'logout',
+                method: 'post',
+                redirect: {
+                    success: 'auth/login',
+                    failure: null,
+                },
+            },
+            token: {
+                class: NbAuthJWTToken,
+                key: 'token',
+            },
+        }),
     ],
     forms: {
-      login: {
-        rememberMe: true,
-        showMessages: {     // show/not show success/error messages
-          success: true,
-          error: true,
+        login: {
+            rememberMe: true,
+            showMessages: {     // show/not show success/error messages
+                success: true,
+                error: true,
+            },
+            socialLinks: socialLinks,
         },
-        socialLinks: socialLinks,
-      },
-      register: {
-        socialLinks: socialLinks,
-      },
+        register: {
+            socialLinks: socialLinks,
+        },
     },
   }).providers,
 
   NbSecurityModule.forRoot({
     accessControl: {
-      provider : {
-        view: ['sales', 'providers', 'products', 'movements', 'locals', 'current-accounts', 'companies', 'cash-boxes'],
-      },
       user: {
-        parent: 'provider',
-        view: '*',
-        create: '*',
-        clone: '*',
-        edit: '*',
-        remove: '*',
+        view: ['users'],
       },
       admin: {
         parent: 'user',
@@ -172,14 +201,10 @@ export const NB_CORE_PROVIDERS = [
   {
     provide: NbRoleProvider, useClass: NgxRoleProvider,
   },
+  { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   AuthGuard,
-  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   AnalyticsService,
   LayoutService,
-  PlayerService,
-  StateService,
-  ApiService,
-  UserService
 ];
 
 @NgModule({
@@ -193,15 +218,15 @@ export const NB_CORE_PROVIDERS = [
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
-    throwIfAlreadyLoaded(parentModule, 'CoreModule');
+      throwIfAlreadyLoaded(parentModule, 'CoreModule');
   }
 
-  static forRoot(): ModuleWithProviders {
-    return <ModuleWithProviders>{
-      ngModule: CoreModule,
-      providers: [
-        ...NB_CORE_PROVIDERS,
-      ],
-    };
+  static forRoot(): ModuleWithProviders<CoreModule> {
+      return {
+          ngModule: CoreModule,
+          providers: [
+              ...NB_CORE_PROVIDERS,
+          ],
+      };
   }
 }

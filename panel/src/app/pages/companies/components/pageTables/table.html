@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-12 col-table">
+    <nb-card [nbSpinner]="loading" nbSpinnerSize="large" nbSpinnerStatus="success">
+      <nb-card-header>
+        <span>
+          <nb-icon icon="briefcase-outline"></nb-icon> Empresas
+        </span>
+        <span class="float-right" *nbIsGranted="['create', 'companies']">
+          <button nbButton routerLink="create" status="success" size="small">
+            <nb-icon icon="plus"></nb-icon><span class="d-none d-lg-inline d-md-inline">Nuevo</span>
+          </button>
+        </span>
+      </nb-card-header>
+      <nb-card-body>
+        <search-box (onChangeValue)="getPage(1, $event)" (onOptionChange)="refreshPage($event)" [baConfPage]="options">
+        </search-box>
+        <div class="table-container" *ngIf="!loading">
+          <table class="table table-striped">
+            <thead>
+              <tr class="no-top-border">
+                <th style="width:120px; max-width: 120px;">Acción</th>
+                <th>Nombre completo</th>
+                <th>CUIT</th>
+                <th>Dirección</th>
+                <th>Propietario</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="config.totalItems > 0">
+              <tr *ngFor="let company of asyncDataTable | async | paginate: config" class="no-top-border">
+                <td>
+                  <span class="btn-inline">
+                    <button nbButton *nbIsGranted="['edit', 'companies']" status="success" size="tiny" type="button"
+                      nbTooltip="Editar Empresa" (click)="editItem(company['_id'])">
+                      <nb-icon icon="edit"></nb-icon>
+                    </button>
+                    <ng-container *ngIf="userService.user.company_id != company._id">
+                      <button nbButton *nbIsGranted="['remove', 'companies']" status="danger" size="tiny" type="button"
+                      nbTooltip="Borrar Empresa" (click)="deleteModal.show(company['_id'])">
+                      <nb-icon icon="close"></nb-icon>
+                    </button>
+                    </ng-container>
+                    
+                  </span>
+                </td>
+                <td class="nowrap">{{company['name']}}</td>
+                <td class="nowrap">{{company['cuit']}}</td>
+                <td class="nowrap">{{company['address']}}</td>
+                <td class="nowrap">{{company.owner?.username || "error"}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <nb-alert status="primary" *ngIf="config.totalItems <= 0">
+            No se encontraron resultados.
+          </nb-alert>
+        </div>
+      </nb-card-body>
+    </nb-card>
+    <div class="text-center">
+      <pagination-component [config]="config" (pageChange)="getPage($event)"></pagination-component>
+    </div>
+  </div>
+</div>
+
+<custom-modal #deleteModal
+  [baModalConfig]="{title:'Eliminar Empresa',body:'Esta seguro que desea eliminar este elemento?', buttonOkey: 'Eliminar', buttonOkeyColor: 'danger', buttonOkeyIcon : 'trash-outline'}"
+  [disabled]="deleting" (onOkey)="deleteItem($event)"></custom-modal>

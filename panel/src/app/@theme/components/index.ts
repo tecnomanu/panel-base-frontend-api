@@ -7,7 +7,6 @@ export * from './tiny-mce/tiny-mce.component';
 export * from './checkmark-success/checkmark-success.component';
 export * from './pagination/pagination.component';
 export * from './picture-uploader/pictureUploader.component';
-export * from './product-selector/product-selector.component';
 export * from './search-box/search-box.component';
 export * from './select2/select2.component';
 export * from './modal/modal.component';

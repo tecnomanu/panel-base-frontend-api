@@ -1,0 +1,148 @@
+<ngx-auth-block>
+  <h2 class="form-text sub-title m-0">Hola!</h2>
+  <h4 class="form-text sub-title">Crea una cuenta gratis!.</h4>
+  <form (ngSubmit)="register(form)" #form="ngForm" autocomplete="nope">
+    <nb-alert accent="error" class="text-center" *ngIf="errors && errors.length > 0 && !submitted">
+      <div *ngFor="let error of errors">{{ error }}</div>
+    </nb-alert>
+    <nb-alert accent="success" class="text-center" *ngIf="messages && messages.length > 0 && !submitted">
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </nb-alert>
+    <div class="form-group">
+      <label for="input-username" class="sr-only">Usuario</label>
+      <input nbInput
+             [(ngModel)]="user.username"
+             #username="ngModel"
+             id="input-username"
+             name="username"
+             placeholder="Usuario"
+             autofocus
+             fullWidth
+             fieldSize="large"
+             [status]="username.dirty ? (username.invalid  ? 'danger' : 'success') : 'basic'"
+             required
+             minlength="4"
+             maxlength="32"
+             (change)="changeValue(form, 'username')"
+             [attr.aria-invalid]="username.invalid && username.touched ? true : null">
+      <ng-container *ngIf="username.invalid && username.touched">
+        <p class="caption status-danger" *ngIf="username.errors?.minlength">
+          El nombre de usuario deberia contener minimo de 4 caracteres.
+        </p>
+        <p class="caption status-danger" *ngIf="username.errors?.maxlength">
+          El nombre de usuario no puede contener mas de 32 caracteres.
+        </p>
+        <p class="caption status-danger" *ngIf="username.errors?.required">
+          El nombre de usuario es requerido!
+        </p>
+        <p class="caption status-danger" *ngIf="username.errors?.unique">
+          El nombre de usuario se encuentra ocupado
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-group">
+      <label for="input-email" class="sr-only">Email:</label>
+      <input nbInput
+             [(ngModel)]="user.email"
+             #email="ngModel"
+             id="input-email"
+             name="email"
+             pattern=".+@.+..+"
+             placeholder="Correo Electronico"
+             fullWidth
+             fieldSize="large"
+             [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'"
+             required
+             (change)="changeValue(form, 'email')"
+             [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+      <ng-container *ngIf="email.invalid && email.touched">
+        <p class="caption status-danger" *ngIf="email.errors?.required">
+          Se requiere un email!
+        </p>
+        <p class="caption status-danger" *ngIf="email.errors?.pattern">
+          El Email debería ser uno real!
+        </p>
+        <p class="caption status-danger" *ngIf="email.errors?.unique">
+          El email ya esta siendo usado
+        </p>
+        <p class="caption status-danger" *ngIf="email.errors?.error_dns">
+          Intente otro correo, este no responde!
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-group">
+      <label for="input-password" class="sr-only">Password:</label>
+      <input nbInput
+             [(ngModel)]="user.password"
+             #password="ngModel"
+             type="password"
+             id="input-password"
+             name="password"
+             placeholder="Password"
+             fullWidth
+             fieldSize="large"
+             [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : 'basic'"
+             required
+             minlength="8"
+             (change)="changeValue(form, 'password_confirmation')"
+             [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+      <ng-container *ngIf="password.invalid && password.touched">
+        <p class="caption status-danger" *ngIf="password.errors?.required">
+          El Password es requerido!
+        </p>
+        <p class="caption status-danger" *ngIf="password.errors?.minlength">
+          El Password deberia contener minimo 8 caracteres.
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-group">
+      <label for="input-re-password" class="sr-only">Confirmar Password:</label>
+      <input nbInput
+             [(ngModel)]="user.password_confirmation"
+             #password_confirmation="ngModel"
+             type="password"
+             id="input-re-password"
+             name="password_confirmation"
+             placeholder="Confirmar Password"
+             fullWidth
+             fieldSize="large"
+             [status]="password_confirmation.dirty ? (password_confirmation.invalid || password.value != password_confirmation.value  ? 'danger' : 'success') : 'basic'"
+             required
+             (change)="changeValue(form, 'password_confirmation')"
+             [attr.aria-invalid]="password_confirmation.invalid && password_confirmation.touched ? true : null">
+      <ng-container *ngIf="password_confirmation.invalid && password_confirmation.touched">
+        <p class="caption status-danger" *ngIf="password_confirmation.errors?.required">
+          La confirmación de password es requerida!
+        </p>
+        <p class="caption status-danger"
+           *ngIf="(password.value != password_confirmation.value &&
+            !password_confirmation.errors?.required) || password_confirmation.errors?.match">
+          El Password no coincide con la confirmación
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-control accept-group" *ngIf="getConfigValue('forms.register.terms')">
+      <nb-checkbox name="terms" [(ngModel)]="user.terms" [required]="getConfigValue('forms.register.terms')">
+        Acepto todos los <a href="#" target="_blank"><strong>Terminos & Condiciones</strong></a>
+      </nb-checkbox>
+    </div>
+
+    <button nbButton
+            fullWidth
+            status="success"
+            size="large"
+            [disabled]="submitted || !form.valid"
+            [class.btn-pulse]="submitted">
+      Registrarse
+    </button>
+  </form>
+  <hr/>
+  <section class="another-action text-center" aria-label="Login">
+    Ya tenes una cuenta? <a class="text-link" routerLink="../login"><strong>Inicia Sesión</strong></a>
+  </section>
+
+</ngx-auth-block>

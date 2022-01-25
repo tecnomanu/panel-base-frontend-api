@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+
 
 import {
-    NbAuthComponent,
-    NbLoginComponent,
-    NbLogoutComponent,
-    NbRegisterComponent,
-    NbRequestPasswordComponent,
-    NbResetPasswordComponent,
-} from '@nebular/auth';
-
-import { NgxAuthComponent, NgxLoginComponent } from './components';
+    NgxAuthComponent,
+    NgxLoginComponent,
+    NgxRegisterComponent,
+    NgxVerifyComponent,
+    NgxLogoutComponent,
+    NgxRequestPasswordComponent,
+    NgxResetPasswordComponent,
+} from './components';
 
 export const routes: Routes = [
     {
@@ -18,31 +18,37 @@ export const routes: Routes = [
         component: NgxAuthComponent,
         children: [
             {
-                path: '',
-                component: NgxLoginComponent,
-            },
-            {
                 path: 'login',
                 component: NgxLoginComponent,
             },
             {
                 path: 'register',
-                component: NbRegisterComponent,
+                component: NgxRegisterComponent,
+            },
+            {
+                path: 'verify',
+                component: NgxVerifyComponent,
+            },
+            {
+                path: 'verify/:id/:code',
+                component: NgxVerifyComponent,
             },
             {
                 path: 'logout',
-                component: NbLogoutComponent,
+                component: NgxLogoutComponent,
             },
             {
                 path: 'request-password',
-                component: NbRequestPasswordComponent,
+                component: NgxRequestPasswordComponent,
             },
             {
                 path: 'reset-password',
-                component: NbResetPasswordComponent,
+                component: NgxResetPasswordComponent,
             },
+            {path: '', redirectTo: 'login', pathMatch: 'full'},
+            {path: '**', redirectTo: 'login'},
         ],
-    }
+    },
 ];
 
 @NgModule({

@@ -1,49 +1,55 @@
-import {Component, ViewChild, Input, Output, ElementRef, EventEmitter} from '@angular/core';
-import { ModalDirective } from 'ngx-bootstrap';
-import { NbDialogService } from '@nebular/theme';
-import { CustomModalDialogComponent } from './dialog/dialog.component';
-
-import 'style-loader!./modal.scss';
+import {Component, EventEmitter, Input, Output, TemplateRef, ViewChild} from '@angular/core';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 
 @Component({
-  selector: 'custom-modal',
-  templateUrl: './modal.html'
+    selector: 'custom-modal',
+    styleUrls: ['./modal.scss'],
+    templateUrl: './modal.html',
 })
 export class CustomModalComponent {
-  //@ViewChild('customModal', {static: false}) customModal: ModalDirective;
-  data:null;
-  error:null;
-  @Input() baModalConfig={title : "Title", body:"body", buttonOkey: "Aceptar", buttonOkeyColor: "btn-success", buttonOkeyIcon: "ion-checkmark-round"};
-  @Input() disabled=false;
-  @Output() onOkey = new EventEmitter<any>();
-  @Output() onCancel = new EventEmitter<any>();
+    @ViewChild('openModalDialog', {static: false}) modal: TemplateRef<any>;
 
-  constructor (private dialogService: NbDialogService) {
-  }
+    dialog: NbDialogRef<any> = null;
+    data = null;
+    error = null;
+    @Input() baModalConfig = {
+        title: 'Title',
+        body: 'body',
+        buttonOkey: 'Aceptar',
+        buttonOkeyColor: 'btn-success',
+        buttonOkeyIcon: 'ion-checkmark-round',
+    };
+    @Input() disabled = false;
+    @Output() onOkey = new EventEmitter<any>();
+    @Output() onCancel = new EventEmitter<any>();
 
-  public okey(): void{
-    this.onOkey.emit(this.data);
-  }
+    constructor(private dialogService: NbDialogService) {
+    }
 
-  public cancel(): void{
-    this.hide();
-    this.onCancel.emit(this.data);
-  }
+    public okey(): void {
+        this.onOkey.emit(this.data);
+    }
 
-  public setError(string): void{
-    console.log("getError: "+ string);
-    this.error = string;
-  }
+    public cancel(): void {
+        this.close();
+        this.error = null;
+        this.onCancel.emit(this.data);
+    }
 
-  public show(data): void {
-    this.dialogService.open(CustomModalDialogComponent, { context: 'this is some additional data passed to dialog' });
-    this.data = data;
-    //this.customModal.show();
-  }
+    public setError(string): void {
+        console.log('getError: ' + string);
+        this.error = string;
+    }
 
-  public hide(): void {
-    this.error = null;
-    this.data = null;
-    //this.customModal.hide();
-  }
+    public show(data): void {
+        this.error = null;
+        this.data = data;
+        this.dialog = this.dialogService.open(this.modal, {context: data});
+    }
+
+    public close(): void {
+        this.data = null;
+        this.error = null;
+        this.dialog.close();
+    }
 }

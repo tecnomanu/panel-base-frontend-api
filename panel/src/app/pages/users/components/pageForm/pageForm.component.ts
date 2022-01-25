@@ -1,54 +1,69 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import { ApiService } from '../../../../@core/utils';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ApiService} from '../../../../@core/utils';
 import {UserService} from '../../../../@core/utils/users.service';
-import {FormGroup, FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
     selector: 'user-form',
     styleUrls: ['./pageForm.scss'],
-    templateUrl: './pageForm.html'
+    templateUrl: './pageForm.html',
 })
 export class UserForm {
     @Input() spinner = false;
     @Output() invalidForm = new EventEmitter<any>();
     @Input('group')
-    public formGroup:FormGroup;
-    public isCreation = false;
-    roles:any=[];
-    constructor(private _router:Router, private apiService:ApiService, public fb: FormBuilder, public userService:UserService) {
-        this.isCreation = this._router.url.indexOf("create") > -1;
+    public formGroup: FormGroup;
+    @Input() isCreation = false;
+    user: any = {};
 
-        this.apiService.getAll({}, 'role').subscribe(
-            (result) => {this.roles = result['data'];},
-            (error) => {console.log(error);}
-        );        
+    constructor(private _router: Router,
+        public fb: FormBuilder,
+        public userService: UserService) {
     }
 
-    ngOnInit(){
-    }
-    
-    validateRole(role){
-        return this.formGroup.controls.role.value == role;
+    getImage() {
+        if (!this.formGroup)
+            return '';
+
+        const logo = this.formGroup.controls.logo.value;
+        return logo ? (logo['base64_image'] ? logo : logo['image']) : '';
     }
 
-    // public defaultPicture = 'assets/img/theme/no-photo.png';
-    //
-    // changeValue(where, attr, values){
-    //     this.formGroup.controls[where].setValue(values[attr]);
-    // }
-    //
-    // handleChangeImage(file: File){
-    //     let myReader: FileReader = new FileReader();
-    //     let self = this;
-    //     myReader.onloadend = function (e) {
-    //         let avatarControl = self.formGroup.controls['avatar'];
-    //         let fbImg = {
-    //             type: file.type,
-    //             base64_image: myReader.result
-    //         };
-    //         avatarControl.setValue(fbImg);
-    //     };
-    //     myReader.readAsDataURL(file);
-    // }
+    changeValue(value) {
+        if (value == 'password_confirmation')
+            this.formGroup.controls[value]['match'] = false;
+        else
+            this.formGroup.controls[value]['unquire'] = false;
+        this.formGroup.controls[value]['error_dns'] = false;
+    }
+
+    userEditingRole(){
+        const role = this.formGroup.controls['role'].value;
+        if (this.userService.hasRole('client'))
+            return role.indexOf('client') ? true : false;
+        return true;
+    }
+
+    get username() {
+        return this.formGroup.get('username');
+    }
+    get email() {
+        return this.formGroup.get('email');
+    }
+    get password() {
+        return this.formGroup.get('password');
+    }
+    get password_confirmation() {
+        return this.formGroup.get('password_confirmation');
+    }
+    get first_name() {
+        return this.formGroup.get('first_name');
+    }
+    get last_name() {
+        return this.formGroup.get('last_name');
+    }
+    get birthday() {
+        return this.formGroup.get('birthday');
+    }
 }

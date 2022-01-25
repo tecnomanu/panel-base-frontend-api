@@ -12,11 +12,26 @@
   nb-card {
     margin: 0;
   }
+
   .flex-centered {
     margin: auto;
   }
+
   nb-card-body {
     display: flex;
+    flex-direction: column;
+  }
+
+  #logo {
+    height: 50px;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    flex-direction: row;
+
+    img {
+      max-width: 150px;
+    }
   }
 
   // TODO rewrite when develop responsive

@@ -1,22 +1,20 @@
-import {Component, ElementRef, Input, Output, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {ApiService} from '../../../@core/utils';
 
-declare var jQuery: any;
-declare var $: any;
-
-import 'style-loader!./select2component.scss';
-
+declare let jQuery: any;
+declare let $: any;
 
 @Component({
     selector: 'select2-component',
+    styleUrls: ['./select2component.scss'],
     templateUrl: './select2-component.html',
 })
-export class Select2Component {
+export class Select2Component implements OnChanges, AfterViewInit {
     @Input() id: string = 'select2';
     @Input() service;
-    @Input() multiple=false;
-    @Input() defaultValue: any= {id: -1, text: 'Buscar...'};
-    @Input() placeHolder: any= 'Buscar...';
+    @Input() multiple = false;
+    @Input() defaultValue: any = {id: -1, text: 'Buscar...'};
+    @Input() placeHolder: any = 'Buscar...';
     @Input() elementData = 'data';
     @Input() invalid = false;
     @Input() disabled = '';
@@ -30,14 +28,14 @@ export class Select2Component {
     }
 
     ngOnChanges() {
-        if (!this.multiple && this.defaultValue && this.defaultValue._id){
+        if (!this.multiple && this.defaultValue && this.defaultValue._id) {
             const data = [this.defaultValue];
             this.createSelect2(data);
-        }else if (this.multiple && this.defaultValue){
+        } else if (this.multiple && this.defaultValue) {
             const data = this.defaultValue;
             this.createSelect2(data);
         }
-        if(this.clearThis)
+        if (this.clearThis)
             this.clearSelect();
     }
 
@@ -53,27 +51,27 @@ export class Select2Component {
         this.createSelect2(data);
     }
 
-    clearSelect(){
+    clearSelect() {
         const self = this;
         this.elemSelect = this._elementRef.nativeElement.querySelector('#' + this.id);
         jQuery(this.elemSelect).val(-1).trigger('change');
-        this.clearThis = false
+        this.clearThis = false;
     }
 
     createSelect2(data) {
-        //Fix ID undefined replace by _id #ref error when sql provider is MongoDB
-        if(data[0] && data[0]._id && data[0].id == undefined)
+    // Fix ID undefined replace by _id #ref error when sql provider is MongoDB
+        if (data[0] && data[0]._id && data[0].id == undefined)
             data[0]['id'] = data[0]._id;
-        
+
         const self = this;
         this.elemSelect = this._elementRef.nativeElement.querySelector('#' + this.id);
         jQuery(this.elemSelect).select2({
             ajax: {
-                transport: <any> function(params, success, failure){
+                transport: <any>function (params, success, failure) {
                     const options = {
                         q: params.data.term,
                         where: self.elementData,
-                        per_page: 50
+                        per_page: 50,
                     };
                     new Promise((resolve, reject) => {
                         self.apiService.getAll(options, self.service)
@@ -82,24 +80,23 @@ export class Select2Component {
                                     success(result);
                                     resolve(result);
                                 }, result => {
-                                    //failure(result);
+                                    // failure(result);
                                     console.log('error success');
-                                }
+                                },
                             );
                     });
                 },
                 delay: 250,
-                processResults: function (data: any, params: any) {
+                processResults: function (items: any, params: any) {
                     return {
-                        results: data[self.elementData].map(function (item)
-                            {
-                                if(item._id)
-                                    item['id'] = item._id;
-                                if(!item.text)
-                                    item['text'] = item.name;
-                                
-                                return item;
-                            }
+                        results: items[self.elementData].map(function (item) {
+                            if (item._id)
+                                item['id'] = item._id;
+                            if (!item.text)
+                                item['text'] = item.name;
+
+                            return item;
+                        },
                         ),
                     };
                 },
@@ -114,31 +111,31 @@ export class Select2Component {
         }).on('select2:select', function (evt) {
             let newData = jQuery(self.elemSelect).select2('data')[0];
 
-            if(self.multiple)
+            if (self.multiple)
                 newData = jQuery(self.elemSelect).select2('data');
 
             self.onChangeValue.emit(newData);
         }).on('select2:unselect', function (evt) {
             let newData = jQuery(self.elemSelect).select2('data')[0];
 
-            if(self.multiple)
+            if (self.multiple)
                 newData = jQuery(self.elemSelect).select2('data');
 
             self.onChangeValue.emit(newData);
         });
 
 
-        if (!self.multiple && self.defaultValue && self.defaultValue._id && self.defaultValue._id != undefined) {
+        if (!self.multiple && self.defaultValue && self.defaultValue._id) {
             jQuery(self.elemSelect).val(self.defaultValue._id).trigger('change');
-        }else if(self.multiple && self.defaultValue[0] && self.defaultValue[0]._id != undefined) {
-            var selectedValues = self.parseUrls(self.defaultValue);
+        } else if (self.multiple && self.defaultValue[0] && self.defaultValue[0]._id != undefined) {
+            const selectedValues = self.parseUrls(self.defaultValue);
             jQuery(self.elemSelect).val(selectedValues).trigger('change');
         }
     }
 
-    parseUrls(urls){
-        var selectedValues = [];
-        for (let url of urls){
+    parseUrls(urls) {
+        const selectedValues = [];
+        for (const url of urls) {
             url.text = url.url;
             selectedValues.push(url.id);
         }

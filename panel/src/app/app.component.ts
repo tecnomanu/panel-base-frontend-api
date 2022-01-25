@@ -4,7 +4,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 import { Component, OnInit } from '@angular/core';
-import { AnalyticsService } from './@core/utils/analytics.service';
+import { AnalyticsService } from './@core/utils';
 
 @Component({
   selector: 'ngx-app',

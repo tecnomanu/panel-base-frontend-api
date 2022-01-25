@@ -3,7 +3,12 @@
 // @nebular out of the box themes
 @import '~@nebular/theme/styles/themes';
 
+
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,600,700&display=swap');
+$fontFamily: 'Raleway', sans-serif;
+
 $nb-themes: nb-register-theme((
+  font-family-primary: unquote('Raleway, sans-serif'),
   font-family-secondary: font-family-primary,
   layout-padding-top: 2.25rem,
   layout-window-mode-padding-top: 0,

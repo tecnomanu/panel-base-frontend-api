@@ -1,62 +1,75 @@
 <ngx-auth-block>
-    <div class="text-center" id="logo"><img [src]="logo" alt="{{siteConf.companyName}} - Logo" width="200px" class="pb-3"></div>
-    <!--<h5 class="title">Inicio de Sesión</h5>-->
-    <small class="form-text sub-title">Hola! Ingresa tu nombre de usuario y password para iniciar sesión.</small>
-    <form (ngSubmit)="login()" #form="ngForm" autocomplete="nope">
-        <div *ngIf="showMessages.error && errors && errors.length > 0 && !submitted"
-             class="alert alert-danger" role="alert">
-            <div><strong>Hubo un error!</strong></div>
-            <div *ngFor="let error of errors">{{ error }}</div>
-        </div>
-        <div *ngIf="showMessages.success && messages && messages.length > 0 && !submitted"
-             class="alert alert-success" role="alert">
-            <div><strong>Login correcto!</strong></div>
-            <div *ngFor="let message of messages">{{ message }}</div>
-        </div>
-        <div class="form-group">
-            <label for="input-username" class="sr-only">Usuario</label>
-            <input name="text" [(ngModel)]="user.username" id="input-username"
-                   class="form-control" placeholder="Nombre de usuario" #username="ngModel"
-                   [class.form-control-danger]="username.invalid && username.touched" autofocus
-                   [required]="getConfigValue('forms.validation.username.required')">
-            <small class="form-text error" *ngIf="username.invalid && username.touched && username.errors?.required">
-                El nombre de usuario es requerido!
-            </small>
-        </div>
-        <div class="form-group">
-            <label for="input-password" class="sr-only">Password</label>
-            <input name="password" [(ngModel)]="user.password" type="password" id="input-password"
-                   class="form-control" placeholder="Password" #password="ngModel"
-                   [class.form-control-danger]="password.invalid && password.touched"
-                   [required]="getConfigValue('forms.validation.password.required')"
-                   [minlength]="getConfigValue('forms.validation.password.minLength')"
-                   [maxlength]="getConfigValue('forms.validation.password.maxLength')">
-            <small class="form-text error" *ngIf="password.invalid && password.touched && password.errors?.required">
-                El password es requerido!
-            </small>
-            <small
-                    class="form-text error"
-                    *ngIf="password.invalid && password.touched && (password.errors?.minlength || password.errors?.maxlength)">
-                Password should contains
-                El password debería tener
-                entre {{ getConfigValue('forms.validation.password.minLength') }}
-                y {{ getConfigValue('forms.validation.password.maxLength') }}
-                caracteres
-            </small>
-        </div>
-        <div class="form-group accept-group col-sm-12">
-            <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Recordarme</nb-checkbox>
-            <!--<a class="forgot-password" routerLink="../request-password">Olvide mi Password?</a>-->
-        </div>
-        <button nbButton
-                status="success"
-                fullWidth
-                [disabled]="submitted || !form.valid" class="btn btn-block btn-hero-success"
-                [class.btn-pulse]="submitted">
-            Iniciar sesión
-        </button>
-        <div class="pt-3 text-center">
-            <small class="form-text"><b><a [href]="siteConf.companyWebsite" target="_blank">{{siteConf.companyName}}</a></b> Admin 2019<br/>Todos los derechos reservados.</small>
-        </div>
-    </form>
+  <!--<h5 class="title">Inicio de Sesión</h5>-->
+  <h2 class="form-text sub-title m-0">Hola!</h2>
+  <h5 class="form-text sub-title">Inicia sesión con tus datos.</h5>
+  <form (ngSubmit)="login()" #form="ngForm" autocomplete="nope">
+    <nb-alert accent="danger" class="text-center" *ngIf="errors && errors.length > 0 && !submitted">
+      <div *ngFor="let error of errors">{{ error }}</div>
+    </nb-alert>
+    <nb-alert accent="success" class="text-center" *ngIf="messages && messages.length > 0 && !submitted">
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </nb-alert>
+    <div class="form-group">
+      <label for="input-username" class="sr-only">Usuario</label>
+      <input nbInput
+             [(ngModel)]="user.username"
+             #username="ngModel"
+             id="input-username"
+             name="first_name"
+             placeholder="Usuario"
+             autofocus
+             fullWidth
+             fieldSize="large"
+             [status]="username.dirty ? (username.invalid  ? 'danger' : 'success') : 'basic'"
+             [required]="getConfigValue('forms.validation.username.required')"
+             [minlength]="getConfigValue('forms.validation.username.minLength')"
+             [maxlength]="getConfigValue('forms.validation.username.maxLength')"
+             [attr.aria-invalid]="username.invalid && username.touched ? true : null">
+      <small class="form-text error" *ngIf="username.invalid && username.touched && username.errors?.required">
+        El nombre de usuario es requerido!
+      </small>
+      <ng-container *ngIf="username.invalid && username.touched">
+        <p class="caption status-danger" *ngIf="username.errors?.required">
+          El nombre de usuario es requerido!
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-group">
+      <label for="input-password" class="sr-only">Password:</label>
+      <input nbInput
+             [(ngModel)]="user.password"
+             #password="ngModel"
+             type="password"
+             id="input-password"
+             name="password"
+             placeholder="Password"
+             fullWidth
+             fieldSize="large"
+             [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : 'basic'"
+             [required]="getConfigValue('forms.validation.password.required')"
+             [minlength]="getConfigValue('forms.validation.password.minLength')"
+             [maxlength]="getConfigValue('forms.validation.password.maxLength')"
+             [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+      <ng-container *ngIf="password.invalid && password.touched">
+        <p class="caption status-danger" *ngIf="password.errors?.required">
+          El password es requerido!
+        </p>
+      </ng-container>
+    </div>
+    <button nbButton
+            status="success"
+            fullWidth
+            [disabled]="submitted || !form.valid" class="btn btn-block btn-hero-success"
+            [class.btn-pulse]="submitted">
+      Iniciar sesión
+    </button>
+    <div class="text-center">
+      <a class="forgot-password caption-2" routerLink="../request-password">No recordas tu password?</a>
+    </div>
+  </form>
+  <hr/>
+  <section class="another-action text-center" aria-label="Register">
+    No posees una cuenta aun?<br> <a class="text-link" routerLink="../register"><strong>Registrate GRATIS</strong></a>
+  </section>
 </ngx-auth-block>

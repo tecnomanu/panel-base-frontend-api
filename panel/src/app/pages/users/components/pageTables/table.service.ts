@@ -1,24 +1,24 @@
 import {Injectable} from '@angular/core';
-import { ApiService } from '../../../../@core/utils';
+import {ApiService} from '../../../../@core/utils';
 
 @Injectable()
 export class UserTablesService {
 
     usersTableDataPageSize = 10;
 
-    constructor(private apiService:ApiService) {
-        
+    constructor(private apiService: ApiService) {
+
     }
 
-    getAllUsers(options):any {
+    getAllUsers(options): any {
         return new Promise((resolve, reject) => {
-            this.apiService.getAll(options, 'user').subscribe(result =>resolve(result), result => reject());
+            this.apiService.getAll(options, 'admin/user').subscribe(result => resolve(result), result => reject());
         });
     }
 
-    destroyUser(id):any {
+    destroyUser(id): any {
         return new Promise((resolve, reject) => {
-            this.apiService.destroy(id, 'user').subscribe(result => resolve(result), result => reject());
+            this.apiService.destroy(id, 'admin/user').subscribe(result => resolve(result), result => reject());
         });
     }
 }

@@ -1,86 +1,185 @@
 <div [formGroup]="formGroup">
-    <div class="row" >
-        <div class="col-md-6">
-            <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
-                <nb-card-header>Accesos</nb-card-header>
-                <nb-card-body>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="role">Tipo de Usuario</label>
-                                <select class="form-control" formControlName="role" id="role" placeholder="Rol de Usuario">
-                                    <option value="0">Sin rol</option>
-                                    <option  *ngFor="let role of roles" [value]="role.type">{{role.name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12" *ngIf="validateRole('provider') || validateRole('userProvider')">
-                            <div class="form-group">
-                                <label for="username">Proveedor</label>
-                                <select2-component
-                                        id="provider"
-                                        class="sm"
-                                        service="provider"
-                                        [defaultValue]="formGroup.controls.provider.value"
-                                        (onChangeValue)="formGroup.controls.provider_id.value = $event.id"></select2-component>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="username">Nombre de Usuario</label>
-                                <input type="text" class="form-control" formControlName="username" id="username" placeholder="Username">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" formControlName="password" id="password" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="confirmation_password">Confirmar Password</label>
-                                <input type="password" class="form-control" formControlName="confirmation_password" id="confirmation_password" placeholder="Confirmar Password">
-                            </div>
-                        </div>
-                    </div>
-                </nb-card-body>
-            </nb-card>
-        </div>
-        <div class="col-md-6">
-            <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
-                <nb-card-header>Datos Personales</nb-card-header>
-                <nb-card-body>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="first_name">Nombre</label>
-                                <input type="text" class="form-control" formControlName="first_name" id="first_name" placeholder="Nombre">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="last_name">Apellido</label>
-                                <input type="text" class="form-control" formControlName="last_name" id="last_name" placeholder="Apellido">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Cumpleaños</label>
-                                <input class="form-control" [nbDatepicker]="datepicker" formControlName="birthday" id="birthday" autocomplete="off">
-                                <nb-datepicker #datepicker format="dd-MM-yyyy"></nb-datepicker>
-                            </div>
-                        </div>
-                    </div>
-                </nb-card-body>
-            </nb-card>
-        </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-5 col-lg-5 col-xl-4">
+      <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="person-outline"></nb-icon>
+          Datos de Acceso
+        </nb-card-header>
+        <nb-card-body *ngIf="!spinner">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <small>Role del usuario</small><br>
+                <nb-select formControlName="role" fullWidth id="role" size="small">
+                  <nb-option value="root" *ngIf="userService.hasRoles(['root'])">SuperAdmin</nb-option>
+                  <nb-option value="admin" *ngIf="userService.hasRole(['admin', 'root'])">Administrador</nb-option>
+                  <nb-option value="user" *ngIf="userService.hasRole(['admin', 'root'])">Usuario</nb-option>
+                </nb-select>
+              </div>
+              <div class="form-group">
+                <small>Nombre de usuario</small>
+                <input nbInput formControlName="username" id="username" name="username" placeholder="user.name"
+                  autofocus fullWidth fieldSize="small"
+                  [status]="username.dirty ? (username.invalid  ? 'danger' : 'success') : 'basic'" required
+                  minlength="4" maxlength="32" (change)="changeValue('username')"
+                  [attr.aria-invalid]="username.invalid && username.touched ? true : null" autocomplete="off">
+                <ng-container *ngIf="username.invalid && username.touched">
+                  <p class="caption status-danger" *ngIf="username.errors?.minlength">
+                    El nombre de usuario deberia contener minimo de 4 caracteres.
+                  </p>
+                  <p class="caption status-danger" *ngIf="username.errors?.maxlength">
+                    El nombre de usuario no puede contener mas de 32 caracteres.
+                  </p>
+                  <p class="caption status-danger" *ngIf="username.errors?.required">
+                    El nombre de usuario es requerido!
+                  </p>
+                  <p class="caption status-danger" *ngIf="username.errors?.unique">
+                    El nombre de usuario se encuentra ocupado
+                  </p>
+                </ng-container>
+              </div>
+              <div class="form-group">
+                <small>Email</small>
+                <input nbInput formControlName="email" id="email" name="email" pattern=".+@.+..+"
+                  placeholder="username@empresax.com" fullWidth fieldSize="small"
+                  [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'" required
+                  (change)="changeValue('email')" [attr.aria-invalid]="email.invalid && email.touched ? true : null"
+                  autocomplete="off">
+                <ng-container *ngIf="email.invalid && email.touched">
+                  <p class="caption status-danger" *ngIf="email.errors?.required">
+                    Se requiere un email!
+                  </p>
+                  <p class="caption status-danger" *ngIf="email.errors?.pattern">
+                    El Email debería ser uno real!
+                  </p>
+                  <p class="caption status-danger" *ngIf="email.errors?.unique">
+                    El email ya esta siendo usado
+                  </p>
+                  <p class="caption status-danger" *ngIf="email.errors?.error_dns">
+                    Intente otro correo, este no responde!
+                  </p>
+                </ng-container>
+              </div>
+              <div class="form-group" *ngIf="isCreation">
+                <small>Password</small>
+                <input nbInput formControlName="password" type="password" id="password" name="password"
+                  placeholder="xxxxxxxx" fullWidth fieldSize="small"
+                  [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : 'basic'" required
+                  minlength="8" (change)="changeValue('password_confirmation')"
+                  [attr.aria-invalid]="password.invalid && password.touched ? true : null" autocomplete="off">
+                <ng-container *ngIf="password.invalid && password.touched">
+                  <p class="caption status-danger" *ngIf="password.errors?.required">
+                    El Password es requerido!
+                  </p>
+                  <p class="caption status-danger" *ngIf="password.errors?.minlength">
+                    El Password deberia contener minimo 8 caracteres.
+                  </p>
+                </ng-container>
+              </div>
+              <div class="form-group" *ngIf="isCreation">
+                <small>Confirme Password</small>
+                <input nbInput formControlName="password_confirmation" type="password" id="password_confirmation"
+                  name="password_confirmation" placeholder="xxxxxxxx" fullWidth fieldSize="small"
+                  [status]="password_confirmation.dirty ? (password_confirmation.invalid || password.value != password_confirmation.value  ? 'danger' : 'success') : 'basic'"
+                  required (change)="changeValue('password_confirmation')"
+                  [attr.aria-invalid]="password_confirmation.invalid && password_confirmation.touched ? true : null"
+                  autocomplete="off">
+                <ng-container *ngIf="password_confirmation.invalid && password_confirmation.touched">
+                  <p class="caption status-danger" *ngIf="password_confirmation.errors?.required">
+                    La confirmación de password es requerida!
+                  </p>
+                  <p class="caption status-danger" *ngIf="(password.value != password_confirmation.value &&
+                      !password_confirmation.errors?.required) || password_confirmation.errors?.match">
+                    El Password no coincide con la confirmación
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
     </div>
+    <div class="col-md-5 col-lg-5 col-xl-4">
+      <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="person-outline"></nb-icon>
+          Datos Personales
+        </nb-card-header>
+        <nb-card-body *ngIf="!spinner">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <small>Nombre</small>
+                <input nbInput formControlName="first_name" id="first_name" name="first_name" placeholder="Juan"
+                  autofocus fullWidth fieldSize="small"
+                  [status]="first_name.dirty ? (first_name.invalid  ? 'danger' : 'success') : 'basic'" maxlength="32"
+                  [attr.aria-invalid]="first_name.invalid && first_name.touched ? true : null" autocomplete="off">
+                <ng-container *ngIf="first_name.invalid && first_name.touched">
+                  <p class="caption status-danger" *ngIf="first_name.errors?.maxlength">
+                    El Nombre no puede contener mas de 32 caracteres.
+                  </p>
+                  <p class="caption status-danger" *ngIf="first_name.errors?.pattern">
+                    Ingrese solo letras
+                  </p>
+                  <p class="caption status-danger" *ngIf="first_name.errors?.required">
+                    El Nombre es requerido!
+                  </p>
+                </ng-container>
+              </div>
+              <div class="form-group">
+                <small>Apellido</small>
+                <input nbInput formControlName="last_name" id="last_name" name="last_name" placeholder="Perez" fullWidth
+                  fieldSize="small" [status]="last_name.dirty ? (last_name.invalid  ? 'danger' : 'success') : 'basic'"
+                  [attr.aria-invalid]="last_name.invalid && last_name.touched ? true : null" autocomplete="off">
+                <ng-container *ngIf="last_name.invalid && last_name.touched">
+                  <p class="caption status-danger" *ngIf="last_name.errors?.pattern">
+                    Ingrese solo letras
+                  </p>
+                </ng-container>
+              </div>
+              <div class="form-group">
+                <small>Nacimiento</small>
+                <input nbInput [nbDatepicker]="birthdaypicker" fullWidth fieldSize="small" id="birthday"
+                  formControlName="birthday"
+                  [status]="birthday.dirty ? (birthday.invalid  ? 'danger' : 'success') : 'basic'"
+                  [attr.aria-invalid]="birthday.invalid && birthday.touched ? true : null" autocomplete="off">
+                <nb-datepicker #birthdaypicker format="dd-MM-yyyy"></nb-datepicker>
+                <ng-container *ngIf="birthday.invalid && birthday.touched">
+                  <p class="caption status-danger" *ngIf="birthday.errors?.pattern">
+                    Ingrese una fecha valida
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="col-md-10 col-lg-10 col-xl-8" *ngIf="!isCreation">
+      <nb-card [nbSpinner]="loadingData" nbSpinnerSize="large" nbSpinnerStatus="success">
+        <nb-card-header>
+          <nb-icon icon="lock-outline"></nb-icon> Cambio de contraseña
+        </nb-card-header>
+        <nb-card-body>
+          <p>
+            <nb-icon status="warning" icon="alert-triangle-outline"></nb-icon>
+            Procesada con cuidado, anote bien la nueva contraseña y no la comparta con nadie.
+          </p>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="password">Password</label>
+              <input type="password" nbInput fullWidth formControlName="password" id="password" placeholder="********" required="false">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="password_confirmation">Confirmar Password</label>
+              <input type="password" nbInput fullWidth formControlName="password_confirmation" id="password_confirmation"
+                placeholder="********" required="false">
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
 </div>
 <!--</form>-->

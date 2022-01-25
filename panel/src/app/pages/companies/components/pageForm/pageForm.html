@@ -1,0 +1,156 @@
+<div class="row justify-content-lg-center">
+  <div [class]="isCreation ? 'col-md-6 col-lg-8 col-xl-7' : 'col-lg-10 col-xl-7'" [formGroup]="formCompany">
+    <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
+      <nb-card-header>
+        <nb-icon icon="file-text-outline"></nb-icon>
+        {{myCompany ? 'Datos de mi Empresa' : 'Datos de la empresa'}}
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-group">
+              <small>Nombre</small>
+              <input type="text" nbInput fullWidth formControlName="name" id="name" placeholder="Empresa X"
+                autocomplete="off">
+            </div>
+            <div class="form-group">
+              <small>CUIT</small>
+              <input type="text" nbInput fullWidth formControlName="cuit" id="cuit" placeholder="XX-XXXXXXXX-XX"
+                autocomplete="off">
+            </div>
+            <div class="form-group">
+              <small>Email</small>
+              <input type="email" nbInput fullWidth formControlName="email" id="email" placeholder="info@empresax.com"
+                autocomplete="off">
+            </div>
+            <div class="form-group">
+              <small>Telefono</small>
+              <input type="phone" nbInput fullWidth formControlName="phone" id="phone" placeholder="+54 011 4444-4444"
+                autocomplete="off">
+            </div>
+            <div class="form-group">
+              <small>Dirección</small>
+              <input type="text" nbInput fullWidth formControlName="address" id="address" placeholder="Calle Nº111"
+                autocomplete="off">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <small>Ingrese el Logo de marca</small>
+              <picture-uploader [picture]="getImage()" (onChangePicture)="handleChangeImage($event)"
+                [maintainAspectRatio]="false"
+                [config]="{rounded: false, max_size: 4000, max_width: '300px'}"></picture-uploader>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-md-6 col-lg-4 col-xl-4" [formGroup]="formUser" *ngIf="isCreation">
+    <nb-card [nbSpinner]="!isCreation && spinner" nbSpinnerSize="large" nbSpinnerStatus="success">
+      <nb-card-header>
+        <nb-icon icon="person-outline"></nb-icon>
+        Usuario Propietario
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <small>Primer Nombre</small>
+              <input nbInput formControlName="first_name" id="first_name" name="first_name" placeholder="Juan" autofocus
+                fullWidth fieldSize="small" pattern='^[A-Za-zñÑáéíóúÁÉÍÓÚ ]+$'
+                [status]="first_name.dirty ? (first_name.invalid  ? 'danger' : 'success') : 'basic'" required
+                autocomplete="off" maxlength="32"
+                [attr.aria-invalid]="first_name.invalid && first_name.touched ? true : null">
+              <ng-container *ngIf="first_name.invalid && first_name.touched">
+                <p class="caption status-danger" *ngIf="first_name.errors?.maxlength">
+                  El Primer Nombre no puede contener mas de 32 caracteres.
+                </p>
+                <p class="caption status-danger" *ngIf="first_name.errors?.required">
+                  El Primer Nombre es requerido!
+                </p>
+              </ng-container>
+            </div>
+            <div class="form-group">
+              <small>Nombre de usuario</small>
+              <input nbInput formControlName="username" id="username" name="username" placeholder="user.name" autofocus
+                fullWidth fieldSize="small"
+                [status]="username.dirty ? (username.invalid  ? 'danger' : 'success') : 'basic'" required minlength="4"
+                maxlength="32" (change)="changeValue('username')" autocomplete="off"
+                [attr.aria-invalid]="username.invalid && username.touched ? true : null">
+              <ng-container *ngIf="username.invalid && username.touched">
+                <p class="caption status-danger" *ngIf="username.errors?.minlength">
+                  El nombre de usuario deberia contener minimo de 4 caracteres.
+                </p>
+                <p class="caption status-danger" *ngIf="username.errors?.maxlength">
+                  El nombre de usuario no puede contener mas de 32 caracteres.
+                </p>
+                <p class="caption status-danger" *ngIf="username.errors?.required">
+                  El nombre de usuario es requerido!
+                </p>
+                <p class="caption status-danger" *ngIf="username.errors?.unique">
+                  El nombre de usuario se encuentra ocupado
+                </p>
+              </ng-container>
+            </div>
+            <div class="form-group">
+              <small>Email</small>
+              <input nbInput formControlName="email" id="user_email" name="user_email" pattern=".+@.+..+"
+                placeholder="username@empresax.com" fullWidth fieldSize="small"
+                [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'" required
+                (change)="changeValue('email')" autocomplete="off"
+                [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+              <ng-container *ngIf="email.invalid && email.touched">
+                <p class="caption status-danger" *ngIf="email.errors?.required">
+                  Se requiere un email!
+                </p>
+                <p class="caption status-danger" *ngIf="email.errors?.pattern">
+                  El Email debería ser uno real!
+                </p>
+                <p class="caption status-danger" *ngIf="email.errors?.unique">
+                  El email ya esta siendo usado
+                </p>
+                <p class="caption status-danger" *ngIf="email.errors?.error_dns">
+                  Intente otro correo, este no responde!
+                </p>
+              </ng-container>
+            </div>
+            <div class="form-group">
+              <small>Password</small>
+              <input nbInput formControlName="password" type="password" id="input-password" name="password"
+                placeholder="xxxxxxxx" fullWidth fieldSize="small"
+                [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : 'basic'" required minlength="8"
+                (change)="changeValue('password_confirmation')" autocomplete="off"
+                [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+              <ng-container *ngIf="password.invalid && password.touched">
+                <p class="caption status-danger" *ngIf="password.errors?.required">
+                  El Password es requerido!
+                </p>
+                <p class="caption status-danger" *ngIf="password.errors?.minlength">
+                  El Password deberia contener minimo 8 caracteres.
+                </p>
+              </ng-container>
+            </div>
+            <div class="form-group">
+              <small>Confirme Password</small>
+              <input nbInput formControlName="password_confirmation" type="password" id="password_confirmation"
+                name="password_confirmation" placeholder="xxxxxxxx" fullWidth fieldSize="small" required
+                [status]="password_confirmation.dirty ? (password_confirmation.invalid || password.value != password_confirmation.value  ? 'danger' : 'success') : 'basic'"
+                (change)="changeValue('password_confirmation')" autocomplete="off"
+                [attr.aria-invalid]="password_confirmation.invalid && password_confirmation.touched ? true : null">
+              <ng-container *ngIf="password_confirmation.invalid && password_confirmation.touched">
+                <p class="caption status-danger" *ngIf="password_confirmation.errors?.required">
+                  La confirmación de password es requerida!
+                </p>
+                <p class="caption status-danger" *ngIf="(password.value != password_confirmation.value &&
+                    !password_confirmation.errors?.required) || password_confirmation.errors?.match">
+                  El Password no coincide con la confirmación
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

@@ -6,4 +6,5 @@
 export const environment = {
   production: true,
   qa: false,
+  apiUrl: "http://api.panelbase.com.ar/",
 };

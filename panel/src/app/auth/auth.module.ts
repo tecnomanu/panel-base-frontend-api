@@ -6,18 +6,24 @@ import { RouterModule } from '@angular/router';
 import { NgxAuthRoutingModule } from './auth-routing.module';
 import { NbAuthModule } from '@nebular/auth';
 import {
-    NbCardModule,
-    NbLayoutModule,
     NbAlertModule,
     NbButtonModule,
+    NbCardModule,
     NbCheckboxModule,
-    NbInputModule
+    NbIconModule,
+    NbInputModule,
+    NbLayoutModule,
 } from '@nebular/theme';
 
 import {
     NgxAuthBlockComponent,
     NgxAuthComponent,
-    NgxLoginComponent
+    NgxLoginComponent,
+    NgxRegisterComponent,
+    NgxVerifyComponent,
+    NgxLogoutComponent,
+    NgxRequestPasswordComponent,
+    NgxResetPasswordComponent,
 } from './components';
 
 @NgModule({
@@ -26,6 +32,7 @@ import {
         FormsModule,
         RouterModule,
         NbCardModule,
+        NbIconModule,
         NbLayoutModule,
         NbAlertModule,
         NbInputModule,
@@ -38,6 +45,11 @@ import {
         NgxAuthBlockComponent,
         NgxAuthComponent,
         NgxLoginComponent,
+        NgxRegisterComponent,
+        NgxVerifyComponent,
+        NgxLogoutComponent,
+        NgxRequestPasswordComponent,
+        NgxResetPasswordComponent,
     ],
 })
 export class NgxAuthModule {

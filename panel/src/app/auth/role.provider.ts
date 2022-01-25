@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 
-import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
-import { NbRoleProvider } from '@nebular/security';
+import {NbAuthJWTToken, NbAuthService} from '@nebular/auth';
+import {NbRoleProvider} from '@nebular/security';
+import {map} from 'rxjs/operators';
 
 @Injectable()
 export class NgxRoleProvider implements NbRoleProvider {
@@ -14,9 +14,7 @@ export class NgxRoleProvider implements NbRoleProvider {
     getRole(): Observable<string> {
         return this.authService.onTokenChange()
             .pipe(
-                map((token: NbAuthJWTToken) => {
-                    return token.isValid() ? token.getPayload()['role'] : 'Guest';
-                })
-            )
+                map((token: NbAuthJWTToken) => token.isValid() ? token.getPayload()['role'] : 'Guest'),
+            );
     }
 }

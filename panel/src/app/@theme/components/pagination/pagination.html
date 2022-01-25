@@ -2,24 +2,24 @@
                      [id]="config.id"
                      (pageChange)="pageChange.emit($event)">
 
-    <div class="btn-group" role="group">
-        <button class="btn btn-outline-success"
-                [disabled]="!p.isFirstPage()"
-                [class.disabled]="p.isFirstPage()"
-               (click)="p.previous()"><
-        </button>
+  <div class="btn-group" role="group">
+    <button class="btn btn-outline-success"
+            [disabled]="!p.isFirstPage()"
+            [class.disabled]="p.isFirstPage()"
+            (click)="p.previous()"><
+    </button>
 
-        <button class="btn btn-outline-success"
-               *ngFor="let page of p.pages"
-               [class.active]="config.currentPage == page.value"
-               (click)="p.setCurrent(page.value)" >{{ page.label }}
-        </button>
+    <button class="btn btn-outline-success"
+            *ngFor="let page of p.pages"
+            [class.active]="config.currentPage == page.value"
+            (click)="p.setCurrent(page.value)">{{ page.label }}
+    </button>
 
-        <button class="btn btn-outline-success"
-               [disabled]="p.isLastPage()"
-               [class.disabled]="p.isLastPage()"
-               (click)="p.next()">>
-        </button>
-    </div>
+    <button class="btn btn-outline-success"
+            [disabled]="p.isLastPage()"
+            [class.disabled]="p.isLastPage()"
+            (click)="p.next()">>
+    </button>
+  </div>
 
 </pagination-template>
