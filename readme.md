@@ -10,17 +10,17 @@ Este repositorio cuenta con la version de Lumen 8 + JWT 1.0-rc4 para login de us
 - Panel administrativo con:
     - Dashboard dummy orientado al ecommerce (útil para cualquier otra area)
     - Menu de Empresas, podras administrar las empresas como grupos de trabajos.
-    - Menu de Ususario, lista, crea, edita o elimina los usuarios que estarán enlazados a empresas.
+    - Menu de Usuario, lista, crea, edita o elimina los usuarios que estarán enlazados a empresas.
     - Pantalla de Login, Logout, Singup y validación de ususario por codigo via email.
 
 - API Rest:
     - Semillas para iniciar tu proyecto con Root y empresa base.
-    - Modulo de Usuarios (Model, Controller, Routas) tipo CRUD.
-    - Modulo de Empresas (Model, Controller, Routas) tipo CRUD.
-    - Modulo de Roles (Model, Controller, Routas) solo lectura.
-    - Middleware para Login de usuarios por metodo JWT (token bearer).
+    - Modulo de Usuarios (Model, Controller, Routes) tipo CRUD.
+    - Modulo de Empresas (Model, Controller, Routes) tipo CRUD.
+    - Modulo de Roles (Model, Controller, Routes) solo lectura.
+    - Middleware para Login de usuarios por método JWT (token bearer).
     - Endpoints basados en version, para poder aplicar versiones nuevas en caso de ser necesario.
-    - Trail ReasAction para poder crear Controller simples con pre-funciones tipo CRUD.
+    - Trail RestAction para poder crear Controller simples con pre-funciones tipo CRUD.
 
 ### Documentación de Repositorios utilizados
 - Panel
