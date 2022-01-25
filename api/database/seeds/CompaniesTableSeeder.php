@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CompaniesTableSeeder extends Seeder
@@ -11,12 +13,12 @@ class CompaniesTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = \App\User::where("username", "root")->first();
+        $user = User::where("username", "root")->first();
 
-        $company = \App\Company::where("slug", "panel_base")->first();
+        $company = Company::where("slug", "panel_base")->first();
 
         if(!$company && $user){
-            $company =  \App\Company::create([
+            $company =  Company::create([
                 'name' => 'PanelBase',
                 'slug' => "PanelBase",
                 'owner_id' => $user->id,
